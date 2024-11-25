@@ -3,7 +3,7 @@ package redisx
 import (
 	"fmt"
 
-	"github.com/gox-studio/gona/logger"
+	"gitee.com/andyxt/gona/logger"
 
 	"github.com/go-redis/redis"
 )

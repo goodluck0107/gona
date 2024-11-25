@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/gox-studio/gona/channel"
-	"github.com/gox-studio/gona/channel/wsupgrader"
-	"github.com/gox-studio/gona/logger"
-	"github.com/gox-studio/gona/utils"
+	"gitee.com/andyxt/gona/channel"
+	"gitee.com/andyxt/gona/channel/wsupgrader"
+	"gitee.com/andyxt/gona/logger"
+	"gitee.com/andyxt/gona/utils"
 )
 
 type WSServerBootStrap struct {

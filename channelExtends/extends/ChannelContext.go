@@ -3,7 +3,7 @@ package extends
 import (
 	"fmt"
 
-	"github.com/gox-studio/gona/channelExtends/channelConsts"
+	"gitee.com/andyxt/gona/channelExtends/channelConsts"
 )
 
 func ChannelContextToString(chlCtx OutterChannelHandlerContext) string {

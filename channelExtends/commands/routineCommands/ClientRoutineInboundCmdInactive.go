@@ -1,13 +1,13 @@
 package routineCommands
 
 import (
-	"github.com/gox-studio/gona/channelExtends/channelConsts"
-	"github.com/gox-studio/gona/channelExtends/extends"
-	"github.com/gox-studio/gona/session"
+	"gitee.com/andyxt/gona/channelExtends/channelConsts"
+	"gitee.com/andyxt/gona/channelExtends/extends"
+	"gitee.com/andyxt/gona/session"
 
-	bootstrap "github.com/gox-studio/gona/bootStrap"
-	"github.com/gox-studio/gona/bootStrap/bootStrapClient/listener"
-	"github.com/gox-studio/gona/logger"
+	bootstrap "gitee.com/andyxt/gona/bootStrap"
+	"gitee.com/andyxt/gona/bootStrap/bootStrapClient/listener"
+	"gitee.com/andyxt/gona/logger"
 )
 
 type ClientRoutineInboundCmdInactive struct {

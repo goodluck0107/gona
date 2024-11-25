@@ -1,4 +1,4 @@
-module github.com/gox-studio/gona
+module gitee.com/andyxt/gona
 
 go 1.22.3
 

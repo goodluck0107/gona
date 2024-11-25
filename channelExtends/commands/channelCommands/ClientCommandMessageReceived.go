@@ -1,12 +1,12 @@
 package channelCommands
 
 import (
-	"github.com/gox-studio/gona/channelExtends/commandMaker/routineCmdMaker"
-	"github.com/gox-studio/gona/channelExtends/extends"
-	"github.com/gox-studio/gona/channelExtends/protocol"
+	"gitee.com/andyxt/gona/channelExtends/commandMaker/routineCmdMaker"
+	"gitee.com/andyxt/gona/channelExtends/extends"
+	"gitee.com/andyxt/gona/channelExtends/protocol"
 
-	"github.com/gox-studio/gona/executor"
-	"github.com/gox-studio/gona/logger"
+	"gitee.com/andyxt/gona/executor"
+	"gitee.com/andyxt/gona/logger"
 )
 
 type ClientCommandMessageReceived struct {

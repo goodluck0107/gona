@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/gox-studio/gona/utils"
+	"gitee.com/andyxt/gona/utils"
 
-	"github.com/gox-studio/gona/logger"
+	"gitee.com/andyxt/gona/logger"
 )
 
 func ProRespDataWrite(Resp http.ResponseWriter, Req *http.Request, requestFunc string, retData interface{}) {

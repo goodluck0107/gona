@@ -1,9 +1,9 @@
 package channelCommands
 
 import (
-	"github.com/gox-studio/gona/channelExtends/extends"
+	"gitee.com/andyxt/gona/channelExtends/extends"
 
-	"github.com/gox-studio/gona/logger"
+	"gitee.com/andyxt/gona/logger"
 )
 
 type ServerCommandActive struct {

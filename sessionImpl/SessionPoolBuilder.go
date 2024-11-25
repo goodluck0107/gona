@@ -3,7 +3,7 @@ package sessionImpl
 import (
 	"sync"
 
-	"github.com/gox-studio/gona/session"
+	"gitee.com/andyxt/gona/session"
 )
 
 type SessionPoolBuilder struct {

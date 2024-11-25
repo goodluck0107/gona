@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/gox-studio/gona/collections"
+	"gitee.com/andyxt/gona/collections"
 )
 
 type WordCount struct {

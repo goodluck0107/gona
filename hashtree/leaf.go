@@ -5,9 +5,9 @@ import (
 	"math/big"
 	"reflect"
 
-	"github.com/gox-studio/gona/serialize"
-	"github.com/gox-studio/gona/serialize/json"
-	"github.com/gox-studio/gona/serialize/protobuf"
+	"gitee.com/andyxt/gona/serialize"
+	"gitee.com/andyxt/gona/serialize/json"
+	"gitee.com/andyxt/gona/serialize/protobuf"
 )
 
 var (

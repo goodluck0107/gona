@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"regexp"
 
-	"github.com/gox-studio/gona/cast"
+	"gitee.com/andyxt/gona/cast"
 
 	"github.com/spf13/viper"
 )

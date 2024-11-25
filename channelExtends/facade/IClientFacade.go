@@ -1,9 +1,9 @@
 package facade
 
 import (
-	"github.com/gox-studio/gona/channelExtends/protocol"
+	"gitee.com/andyxt/gona/channelExtends/protocol"
 
-	"github.com/gox-studio/gona/channel"
+	"gitee.com/andyxt/gona/channel"
 )
 
 type IClientFacade interface {

@@ -4,10 +4,10 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/gox-studio/gona/service"
+	"gitee.com/andyxt/gona/service"
 
-	"github.com/gox-studio/gona/channel"
-	"github.com/gox-studio/gona/logger"
+	"gitee.com/andyxt/gona/channel"
+	"gitee.com/andyxt/gona/logger"
 )
 
 type TestParam1 struct{}

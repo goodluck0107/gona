@@ -1,7 +1,7 @@
 package protocolCoder
 
 import (
-	"github.com/gox-studio/gona/channelExtends/protocol"
+	"gitee.com/andyxt/gona/channelExtends/protocol"
 )
 
 type Serializier interface {

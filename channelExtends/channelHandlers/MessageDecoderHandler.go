@@ -1,12 +1,12 @@
 package channelHandlers
 
 import (
-	"github.com/gox-studio/gona/channelExtends/protocol/protocolCoder"
-	"github.com/gox-studio/gona/channelExtends/protocol/protocolCoderImpl"
-	"github.com/gox-studio/gona/channelExtends/protocol/protocolDefine"
+	"gitee.com/andyxt/gona/channelExtends/protocol/protocolCoder"
+	"gitee.com/andyxt/gona/channelExtends/protocol/protocolCoderImpl"
+	"gitee.com/andyxt/gona/channelExtends/protocol/protocolDefine"
 
-	"github.com/gox-studio/gona/channel"
-	"github.com/gox-studio/gona/logger"
+	"gitee.com/andyxt/gona/channel"
+	"gitee.com/andyxt/gona/logger"
 )
 
 // *buffer.ProtocolBuffer ---> UpBase

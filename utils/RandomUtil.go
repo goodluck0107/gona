@@ -1,6 +1,6 @@
 package utils
 
-import "github.com/gox-studio/gona/uuid"
+import "gitee.com/andyxt/gona/uuid"
 
 func GetRandomPassword() string {
 	return uuid.New() //36

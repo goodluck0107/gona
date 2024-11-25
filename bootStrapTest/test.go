@@ -7,11 +7,11 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/gox-studio/gona/bootStrap/bootStrapClient"
-	"github.com/gox-studio/gona/bootStrap/bootStrapClient/connector"
-	"github.com/gox-studio/gona/bootStrap/bootStrapServer"
-	"github.com/gox-studio/gona/channel"
-	"github.com/gox-studio/gona/executor"
+	"gitee.com/andyxt/gona/bootStrap/bootStrapClient"
+	"gitee.com/andyxt/gona/bootStrap/bootStrapClient/connector"
+	"gitee.com/andyxt/gona/bootStrap/bootStrapServer"
+	"gitee.com/andyxt/gona/channel"
+	"gitee.com/andyxt/gona/executor"
 )
 
 func main() {

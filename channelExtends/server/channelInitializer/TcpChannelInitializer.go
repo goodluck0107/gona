@@ -1,11 +1,11 @@
 package channelInitializer
 
 import (
-	"github.com/gox-studio/gona/channelExtends/channelHandlers"
-	"github.com/gox-studio/gona/channelExtends/commandMaker/channelCmdMaker"
-	"github.com/gox-studio/gona/channelExtends/protocol/protocolCoder"
+	"gitee.com/andyxt/gona/channelExtends/channelHandlers"
+	"gitee.com/andyxt/gona/channelExtends/commandMaker/channelCmdMaker"
+	"gitee.com/andyxt/gona/channelExtends/protocol/protocolCoder"
 
-	"github.com/gox-studio/gona/channel"
+	"gitee.com/andyxt/gona/channel"
 )
 
 type TcpChannelInitializer struct {

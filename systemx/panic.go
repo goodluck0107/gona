@@ -5,8 +5,8 @@ import (
 	"runtime"
 	"runtime/debug"
 
-	"github.com/gox-studio/gona/channel/utils"
-	"github.com/gox-studio/gona/logger"
+	"gitee.com/andyxt/gona/channel/utils"
+	"gitee.com/andyxt/gona/logger"
 )
 
 // Function is to get current func name with package name

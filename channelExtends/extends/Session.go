@@ -3,9 +3,9 @@ package extends
 import (
 	"fmt"
 
-	"github.com/gox-studio/gona/session"
+	"gitee.com/andyxt/gona/session"
 
-	"github.com/gox-studio/gona/channel"
+	"gitee.com/andyxt/gona/channel"
 )
 
 const sessionKeyChlCtx = "ChlCtx"

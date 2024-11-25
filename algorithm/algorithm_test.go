@@ -3,7 +3,7 @@ package algorithm_test
 import (
 	"testing"
 
-	"github.com/gox-studio/gona/algorithm"
+	"gitee.com/andyxt/gona/algorithm"
 )
 
 func TestRandPR(t *testing.T) {

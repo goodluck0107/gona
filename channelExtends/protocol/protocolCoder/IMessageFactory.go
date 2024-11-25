@@ -1,9 +1,9 @@
 package protocolCoder
 
 import (
-	"github.com/gox-studio/gona/channelExtends/protocol"
+	"gitee.com/andyxt/gona/channelExtends/protocol"
 
-	"github.com/gox-studio/gona/buffer"
+	"gitee.com/andyxt/gona/buffer"
 )
 
 type IMessageFactory interface {

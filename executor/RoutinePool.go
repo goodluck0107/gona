@@ -1,6 +1,6 @@
 package executor
 
-import "github.com/gox-studio/gona/logger"
+import "gitee.com/andyxt/gona/logger"
 
 const (
 	DefaultPoolSize int64 = 10000

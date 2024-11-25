@@ -3,7 +3,7 @@ package service
 import (
 	"reflect"
 
-	"github.com/gox-studio/gona/channel"
+	"gitee.com/andyxt/gona/channel"
 
 	"github.com/golang/protobuf/proto"
 )

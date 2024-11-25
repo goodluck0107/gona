@@ -3,8 +3,8 @@ package executor
 import (
 	"fmt"
 
-	"github.com/gox-studio/gona/logger"
-	"github.com/gox-studio/gona/utils"
+	"gitee.com/andyxt/gona/logger"
+	"gitee.com/andyxt/gona/utils"
 )
 
 type routine struct {

@@ -7,9 +7,9 @@ import (
 	"strconv"
 	"time"
 
-	bootstrap "github.com/gox-studio/gona/bootStrap"
-	"github.com/gox-studio/gona/channel/utils"
-	"github.com/gox-studio/gona/logger"
+	bootstrap "gitee.com/andyxt/gona/bootStrap"
+	"gitee.com/andyxt/gona/channel/utils"
+	"gitee.com/andyxt/gona/logger"
 )
 
 type SocketChannelReader struct {

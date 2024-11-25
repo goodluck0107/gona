@@ -1,8 +1,8 @@
 package routineCommands
 
 import (
-	"github.com/gox-studio/gona/channelExtends/extends"
-	"github.com/gox-studio/gona/channelExtends/protocol"
+	"gitee.com/andyxt/gona/channelExtends/extends"
+	"gitee.com/andyxt/gona/channelExtends/protocol"
 )
 
 type ClientRoutineInboundCmdMsgRecv struct {

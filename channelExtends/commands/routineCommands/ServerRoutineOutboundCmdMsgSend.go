@@ -1,10 +1,10 @@
 package routineCommands
 
 import (
-	"github.com/gox-studio/gona/channelExtends/extends"
-	"github.com/gox-studio/gona/channelExtends/protocol"
+	"gitee.com/andyxt/gona/channelExtends/extends"
+	"gitee.com/andyxt/gona/channelExtends/protocol"
 
-	"github.com/gox-studio/gona/logger"
+	"gitee.com/andyxt/gona/logger"
 )
 
 type ServerRoutineOutboundCmdMsgSend struct {

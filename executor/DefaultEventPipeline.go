@@ -3,7 +3,7 @@ package executor
 import (
 	"sync"
 
-	"github.com/gox-studio/gona/logger"
+	"gitee.com/andyxt/gona/logger"
 )
 
 type TailHandler struct {

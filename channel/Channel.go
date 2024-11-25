@@ -4,8 +4,8 @@ import (
 	"net"
 	"time"
 
-	"github.com/gox-studio/gona/logger"
-	"github.com/gox-studio/gona/utils"
+	"gitee.com/andyxt/gona/logger"
+	"gitee.com/andyxt/gona/utils"
 )
 
 var readTimeOut = time.Duration(30) * time.Second

@@ -7,9 +7,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/gox-studio/gona/buffer"
-	"github.com/gox-studio/gona/channel/utils"
-	"github.com/gox-studio/gona/logger"
+	"gitee.com/andyxt/gona/buffer"
+	"gitee.com/andyxt/gona/channel/utils"
+	"gitee.com/andyxt/gona/logger"
 )
 
 type SocketChannelWriter struct {

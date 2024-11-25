@@ -3,9 +3,9 @@ package service
 import (
 	"reflect"
 
-	"github.com/gox-studio/gona/channelExtends/extends"
-	"github.com/gox-studio/gona/session"
-	"github.com/gox-studio/gona/utils"
+	"gitee.com/andyxt/gona/channelExtends/extends"
+	"gitee.com/andyxt/gona/session"
+	"gitee.com/andyxt/gona/utils"
 )
 
 type IHandleChecker interface {

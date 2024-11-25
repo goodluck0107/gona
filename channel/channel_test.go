@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gox-studio/gona/utils"
+	"gitee.com/andyxt/gona/utils"
 )
 
 func TestChannelWrite(t *testing.T) {

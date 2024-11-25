@@ -1,7 +1,7 @@
 package listener
 
 import (
-	"github.com/gox-studio/gona/bootStrap/bootStrapClient/connector"
+	"gitee.com/andyxt/gona/bootStrap/bootStrapClient/connector"
 )
 
 type IConnector interface {
