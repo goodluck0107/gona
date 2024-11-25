@@ -1,0 +1,1 @@
+# IEventMaker创建的所有Events全部都在Event的PoolId对应的协程池中QueueId对应的协程中执行
