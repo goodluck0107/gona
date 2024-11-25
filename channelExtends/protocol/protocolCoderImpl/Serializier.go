@@ -1,11 +1,11 @@
 package protocolCoderImpl
 
 import (
-	"gona/channelExtends/protocol"
-	"gona/channelExtends/protocol/protocolCoder"
+	"github.com/gox-studio/gona/channelExtends/protocol"
+	"github.com/gox-studio/gona/channelExtends/protocol/protocolCoder"
 
-	"gona/buffer"
-	"gona/logger"
+	"github.com/gox-studio/gona/buffer"
+	"github.com/gox-studio/gona/logger"
 )
 
 type DefualtSerializier struct {

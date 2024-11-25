@@ -1,11 +1,11 @@
 package channelHandlers
 
 import (
-	"gona/channelExtends/commandMaker/channelCmdMaker"
-	"gona/channelExtends/extends"
+	"github.com/gox-studio/gona/channelExtends/commandMaker/channelCmdMaker"
+	"github.com/gox-studio/gona/channelExtends/extends"
 
-	"gona/channel"
-	"gona/logger"
+	"github.com/gox-studio/gona/channel"
+	"github.com/gox-studio/gona/logger"
 )
 
 // UpBase --->

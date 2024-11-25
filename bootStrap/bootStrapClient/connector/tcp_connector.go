@@ -1,6 +1,6 @@
 package connector
 
-import "gona/executor"
+import "github.com/gox-studio/gona/executor"
 
 type SocketType int
 

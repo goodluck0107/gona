@@ -1,10 +1,10 @@
 package routineCmdMaker
 
 import (
-	"gona/channelExtends/extends"
-	"gona/channelExtends/protocol"
+	"github.com/gox-studio/gona/channelExtends/extends"
+	"github.com/gox-studio/gona/channelExtends/protocol"
 
-	"gona/executor"
+	"github.com/gox-studio/gona/executor"
 )
 
 // Outbound

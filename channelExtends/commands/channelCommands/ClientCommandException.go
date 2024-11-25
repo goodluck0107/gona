@@ -1,9 +1,9 @@
 package channelCommands
 
 import (
-	"gona/channelExtends/extends"
+	"github.com/gox-studio/gona/channelExtends/extends"
 
-	"gona/logger"
+	"github.com/gox-studio/gona/logger"
 )
 
 type ClientCommandException struct {

@@ -1,7 +1,7 @@
 package timex
 
 import (
-	"gona/cast"
+	"github.com/gox-studio/gona/cast"
 
 	"github.com/tidwall/gjson"
 )

@@ -1,11 +1,11 @@
 package routineCommands
 
 import (
-	"gona/channelExtends/channelConsts"
-	"gona/channelExtends/extends"
-	"gona/session"
+	"github.com/gox-studio/gona/channelExtends/channelConsts"
+	"github.com/gox-studio/gona/channelExtends/extends"
+	"github.com/gox-studio/gona/session"
 
-	"gona/logger"
+	"github.com/gox-studio/gona/logger"
 )
 
 type ClientRoutineInboundCmdActive struct {

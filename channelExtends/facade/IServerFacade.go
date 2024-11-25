@@ -1,8 +1,8 @@
 package facade
 
 import (
-	"gona/channelExtends/extends"
-	"gona/channelExtends/protocol"
+	"github.com/gox-studio/gona/channelExtends/extends"
+	"github.com/gox-studio/gona/channelExtends/protocol"
 )
 
 type IServerFacade interface {

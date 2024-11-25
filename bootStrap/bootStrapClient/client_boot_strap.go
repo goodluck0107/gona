@@ -1,10 +1,10 @@
 package bootStrapClient
 
 import (
-	"gona/bootStrap/bootStrapClient/connector"
-	"gona/bootStrap/bootStrapClient/listener"
-	"gona/channel"
-	"gona/logger"
+	"github.com/gox-studio/gona/bootStrap/bootStrapClient/connector"
+	"github.com/gox-studio/gona/bootStrap/bootStrapClient/listener"
+	"github.com/gox-studio/gona/channel"
+	"github.com/gox-studio/gona/logger"
 )
 
 type ClientBootStrap struct {

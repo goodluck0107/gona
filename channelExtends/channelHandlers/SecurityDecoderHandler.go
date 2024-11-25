@@ -3,12 +3,12 @@ package channelHandlers
 import (
 	"fmt"
 
-	"gona/channelExtends/protocol/protocolCoder"
-	"gona/channelExtends/protocol/protocolCoderImpl"
-	"gona/channelExtends/protocol/protocolDefine"
+	"github.com/gox-studio/gona/channelExtends/protocol/protocolCoder"
+	"github.com/gox-studio/gona/channelExtends/protocol/protocolCoderImpl"
+	"github.com/gox-studio/gona/channelExtends/protocol/protocolDefine"
 
-	"gona/channel"
-	"gona/logger"
+	"github.com/gox-studio/gona/channel"
+	"github.com/gox-studio/gona/logger"
 )
 
 // []byte-->*ProtocolBuffer

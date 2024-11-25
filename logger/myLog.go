@@ -8,7 +8,7 @@ import (
 	"runtime"
 	"time"
 
-	"gona/utils"
+	"github.com/gox-studio/gona/utils"
 )
 
 var logLevel int = LogLevelDebug

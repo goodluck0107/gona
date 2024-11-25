@@ -1,6 +1,6 @@
 package channelCmdMaker
 
-import "gona/channelExtends/extends"
+import "github.com/gox-studio/gona/channelExtends/extends"
 
 type IInboundCommandMaker interface {
 	//触发异常

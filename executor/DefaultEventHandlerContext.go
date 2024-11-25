@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"gona/utils"
+	"github.com/gox-studio/gona/utils"
 )
 
 type DefaultEventHandlerContext struct {

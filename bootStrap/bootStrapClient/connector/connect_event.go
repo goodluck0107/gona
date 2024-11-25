@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"time"
 
-	"gona/executor"
-	"gona/logger"
+	"github.com/gox-studio/gona/executor"
+	"github.com/gox-studio/gona/logger"
 
 	"github.com/gorilla/websocket"
 )

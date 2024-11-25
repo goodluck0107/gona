@@ -5,7 +5,7 @@ import (
 	"sort"
 	"time"
 
-	"gona/mathx"
+	"github.com/gox-studio/gona/mathx"
 )
 
 type Signed interface {

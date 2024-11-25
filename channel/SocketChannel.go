@@ -5,9 +5,9 @@ import (
 	"net"
 	"sync"
 
-	"gona/channel/utils"
-	"gona/logger"
-	"gona/uuid"
+	"github.com/gox-studio/gona/channel/utils"
+	"github.com/gox-studio/gona/logger"
+	"github.com/gox-studio/gona/uuid"
 )
 
 const (

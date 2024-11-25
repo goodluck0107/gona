@@ -3,7 +3,7 @@ package kvdb
 import (
 	"fmt"
 
-	"gona/kvdb/redisx"
+	"github.com/gox-studio/gona/kvdb/redisx"
 
 	"github.com/go-redis/redis"
 )

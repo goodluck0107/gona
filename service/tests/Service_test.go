@@ -4,10 +4,10 @@ import (
 	"reflect"
 	"testing"
 
-	"gona/service"
+	"github.com/gox-studio/gona/service"
 
-	"gona/channel"
-	"gona/logger"
+	"github.com/gox-studio/gona/channel"
+	"github.com/gox-studio/gona/logger"
 )
 
 type TestParam1 struct{}

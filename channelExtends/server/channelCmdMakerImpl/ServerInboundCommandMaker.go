@@ -1,11 +1,11 @@
 package channelCmdMakerImpl
 
 import (
-	"gona/channelExtends/commandMaker/channelCmdMaker"
-	"gona/channelExtends/commandMaker/routineCmdMaker"
-	"gona/channelExtends/commands/channelCommands"
+	"github.com/gox-studio/gona/channelExtends/commandMaker/channelCmdMaker"
+	"github.com/gox-studio/gona/channelExtends/commandMaker/routineCmdMaker"
+	"github.com/gox-studio/gona/channelExtends/commands/channelCommands"
 
-	"gona/channel"
+	"github.com/gox-studio/gona/channel"
 )
 
 type ServerInboundCommandMaker struct {

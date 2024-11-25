@@ -3,8 +3,8 @@ package listener
 import (
 	"net"
 
-	"gona/bootStrap/bootStrapClient/connector"
-	"gona/logger"
+	"github.com/gox-studio/gona/bootStrap/bootStrapClient/connector"
+	"github.com/gox-studio/gona/logger"
 )
 
 type IConnReceiver interface {

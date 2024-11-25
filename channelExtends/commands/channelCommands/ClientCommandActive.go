@@ -1,12 +1,12 @@
 package channelCommands
 
 import (
-	"gona/channelExtends/commandMaker/routineCmdMaker"
-	"gona/channelExtends/extends"
+	"github.com/gox-studio/gona/channelExtends/commandMaker/routineCmdMaker"
+	"github.com/gox-studio/gona/channelExtends/extends"
 
-	"gona/executor"
-	"gona/il18n"
-	"gona/logger"
+	"github.com/gox-studio/gona/executor"
+	"github.com/gox-studio/gona/il18n"
+	"github.com/gox-studio/gona/logger"
 )
 
 type ClientCommandActive struct {

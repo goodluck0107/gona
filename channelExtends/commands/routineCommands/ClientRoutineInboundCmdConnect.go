@@ -1,12 +1,12 @@
 package routineCommands
 
 import (
-	"gona/channelExtends/channelConsts"
-	"gona/session"
+	"github.com/gox-studio/gona/channelExtends/channelConsts"
+	"github.com/gox-studio/gona/session"
 
-	"gona/bootStrap/bootStrapClient/listener"
-	"gona/logger"
-	"gona/utils"
+	"github.com/gox-studio/gona/bootStrap/bootStrapClient/listener"
+	"github.com/gox-studio/gona/logger"
+	"github.com/gox-studio/gona/utils"
 )
 
 type ClientRoutineInboundCmdConnect struct {

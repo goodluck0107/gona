@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"testing"
 
-	"gona/utils"
+	"github.com/gox-studio/gona/utils"
 )
 
 func TestTokenGenerator(t *testing.T) {

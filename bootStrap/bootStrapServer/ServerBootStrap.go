@@ -3,9 +3,9 @@ package bootStrapServer
 import (
 	"net"
 
-	"gona/channel"
-	"gona/logger"
-	"gona/utils"
+	"github.com/gox-studio/gona/channel"
+	"github.com/gox-studio/gona/logger"
+	"github.com/gox-studio/gona/utils"
 )
 
 type ServerBootStrap struct {

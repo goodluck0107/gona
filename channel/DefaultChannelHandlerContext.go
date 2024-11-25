@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	"gona/channel/utils"
-	"gona/logger"
+	"github.com/gox-studio/gona/channel/utils"
+	"github.com/gox-studio/gona/logger"
 )
 
 type DefaultChannelHandlerContext struct {

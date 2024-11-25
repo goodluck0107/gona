@@ -1,11 +1,11 @@
 package routineCmdMakerImpl
 
 import (
-	"gona/channelExtends/commands/routineCommands"
-	"gona/channelExtends/extends"
-	"gona/channelExtends/protocol"
+	"github.com/gox-studio/gona/channelExtends/commands/routineCommands"
+	"github.com/gox-studio/gona/channelExtends/extends"
+	"github.com/gox-studio/gona/channelExtends/protocol"
 
-	"gona/executor"
+	"github.com/gox-studio/gona/executor"
 )
 
 type ServerOutboundEventMaker struct {

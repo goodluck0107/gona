@@ -1,12 +1,12 @@
 package routineCmdMakerImpl
 
 import (
-	"gona/channelExtends/commands/routineCommands"
-	"gona/channelExtends/protocol"
+	"github.com/gox-studio/gona/channelExtends/commands/routineCommands"
+	"github.com/gox-studio/gona/channelExtends/protocol"
 
-	"gona/bootStrap/bootStrapClient/listener"
-	"gona/channel"
-	"gona/executor"
+	"github.com/gox-studio/gona/bootStrap/bootStrapClient/listener"
+	"github.com/gox-studio/gona/channel"
+	"github.com/gox-studio/gona/executor"
 )
 
 type ClientEventMakerImpl struct {

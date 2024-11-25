@@ -3,7 +3,7 @@ package eventBus
 import (
 	"fmt"
 
-	"gona/executor"
+	"github.com/gox-studio/gona/executor"
 
 	"github.com/mohae/deepcopy"
 )

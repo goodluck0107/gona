@@ -5,8 +5,8 @@ import (
 	"math"
 	"math/rand"
 
-	"gona/boost"
-	"gona/systemx"
+	"github.com/gox-studio/gona/boost"
+	"github.com/gox-studio/gona/systemx"
 )
 
 func init() {

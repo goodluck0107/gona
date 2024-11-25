@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"gona/logger"
+	"github.com/gox-studio/gona/logger"
 )
 
 type serviceCenter struct {
