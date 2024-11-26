@@ -1,4 +1,4 @@
-package bootStrapServer
+package boots
 
 import (
 	"fmt"

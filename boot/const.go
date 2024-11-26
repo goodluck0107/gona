@@ -1,4 +1,4 @@
-package bootStrap
+package boot
 
 const (
 	KeyChannelReadLimit = "ChannelReadLimit"

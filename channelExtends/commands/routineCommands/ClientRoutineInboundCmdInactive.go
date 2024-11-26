@@ -1,11 +1,11 @@
 package routineCommands
 
 import (
+	"gitee.com/andyxt/gona/boot"
 	"gitee.com/andyxt/gona/channelExtends/channelConsts"
 	"gitee.com/andyxt/gona/channelExtends/extends"
 	"gitee.com/andyxt/gona/session"
 
-	bootstrap "gitee.com/andyxt/gona/bootStrap"
 	"gitee.com/andyxt/gona/bootStrap/bootStrapClient/listener"
 	"gitee.com/andyxt/gona/logger"
 )
@@ -69,13 +69,13 @@ func (inactiveEvent *ClientRoutineInboundCmdInactive) Exec() {
 	port := inactiveEvent.ChlCtx.ContextAttr().GetInt(channelConsts.ChannelPort)
 	channelTag := inactiveEvent.ChlCtx.ContextAttr().GetString(channelConsts.ChannelTag)
 	jsonData := inactiveEvent.ChlCtx.ContextAttr().GetString(channelConsts.ChannelParams)
-	channelReadLimit := inactiveEvent.ChlCtx.ContextAttr().GetString(bootstrap.KeyChannelReadLimit)
+	channelReadLimit := inactiveEvent.ChlCtx.ContextAttr().GetString(boot.KeyChannelReadLimit)
 	params := make(map[string]interface{})
 	params[channelConsts.ChannelIp] = ip
 	params[channelConsts.ChannelPort] = port
 	params[channelConsts.ChannelFireUser] = uId
 	params[channelConsts.ChannelTag] = channelTag
 	params[channelConsts.ChannelParams] = jsonData
-	params[bootstrap.KeyChannelReadLimit] = channelReadLimit
+	params[boot.KeyChannelReadLimit] = channelReadLimit
 	inactiveEvent.connector.Connect(ip, port, params)
 }

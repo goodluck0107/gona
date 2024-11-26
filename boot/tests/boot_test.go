@@ -5,29 +5,30 @@ import (
 	"fmt"
 	"runtime"
 	"strconv"
+	"testing"
 	"time"
 
 	"gitee.com/andyxt/gona/bootStrap/bootStrapClient"
 	"gitee.com/andyxt/gona/bootStrap/bootStrapClient/connector"
-	"gitee.com/andyxt/gona/bootStrap/bootStrapServer"
+	"gitee.com/andyxt/gona/bootStrap/boots"
 	"gitee.com/andyxt/gona/channel"
 	"gitee.com/andyxt/gona/executor"
 )
 
-func main() {
+func TestClient(t *testing.T) {
 	// testServer()
 	testClient()
 }
 
 func testClient() {
 	executor.Init(NewRoutinePoolBuilder())
-	bootStrap :=
+	bc :=
 		bootStrapClient.NewClientBootStrap(connector.NormalSocket, 1)
-	connector := bootStrap.GetConnector()
-	bootStrap.
+	connector := bc.GetConnector()
+	bc.
 		ChannelInitializer(
 			NewTestChannelInitializer(1))
-	bootStrap.Listen()
+	bc.Listen()
 	fmt.Println("Connect")
 	params := make(map[string]interface{})
 	params["key"] = "clientValue"
@@ -43,13 +44,13 @@ func testServer() {
 	executor.Init(NewRoutinePoolBuilder())
 	params := make(map[string]interface{})
 	params["key"] = "serverValue"
-	bootStrap :=
-		bootStrapServer.NewServerBootStrap().
+	bs :=
+		boots.NewServerBootStrap().
 			Params(params).
 			Port(":20000").
 			ChannelInitializer(
 				NewTestChannelInitializer(1))
-	go bootStrap.Listen()
+	go bs.Listen()
 	for {
 		fmt.Println("当前协程数：", runtime.NumGoroutine())
 		time.Sleep(time.Second * 1)

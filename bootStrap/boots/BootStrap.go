@@ -1,4 +1,4 @@
-package bootStrapServer
+package boots
 
 const (
 	LocalHostIp              = "127.0.0.1"

@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"time"
 
-	bootstrap "gitee.com/andyxt/gona/bootStrap"
+	"gitee.com/andyxt/gona/boot"
 	"gitee.com/andyxt/gona/channel/utils"
 	"gitee.com/andyxt/gona/logger"
 )
@@ -30,9 +30,9 @@ func NewSocketChannelReader(mConn net.Conn,
 	this.mContext = mContext
 	this.mChannelError = mChannelError
 	this.mChannelCallBack = mChannelCallBack
-	this.mChannelReadLimit = this.mContext.GetInt32(bootstrap.KeyChannelReadLimit)
+	this.mChannelReadLimit = this.mContext.GetInt32(boot.KeyChannelReadLimit)
 	if this.mChannelReadLimit <= 0 {
-		this.mChannelReadLimit = bootstrap.ChannelReadLimit
+		this.mChannelReadLimit = boot.ChannelReadLimit
 	}
 	return
 }
