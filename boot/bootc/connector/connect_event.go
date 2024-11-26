@@ -8,7 +8,6 @@ import (
 	"strconv"
 	"time"
 
-	"gitee.com/andyxt/gona/executor"
 	"gitee.com/andyxt/gona/logger"
 
 	"github.com/gorilla/websocket"
@@ -22,6 +21,16 @@ type IConnectFail interface {
 	Handle(err error)
 }
 
+type Event interface {
+	PoolId() (poolId int64)
+	/**
+	 * 为保证事件序列化执行，需要序列化执行的事件必须提供一致的queueId
+	 * */
+	QueueId() (queueId int64)
+	Exec()
+	Wait() (result interface{}, ok bool)
+}
+
 type connectEvent struct {
 	routinePoolID int64
 	ip            string
@@ -31,7 +40,7 @@ type connectEvent struct {
 	fail          IConnectFail
 }
 
-func newConnectEvent(routinePoolID int64, ip string, port int, retryTimes int, success IConnectSuccess, fail IConnectFail) executor.Event {
+func newConnectEvent(routinePoolID int64, ip string, port int, retryTimes int, success IConnectSuccess, fail IConnectFail) Event {
 	instance := new(connectEvent)
 	instance.routinePoolID = routinePoolID
 	instance.ip = ip
@@ -100,7 +109,7 @@ type websocketConnectEvent struct {
 	fail          IConnectFail
 }
 
-func newWebsocketConnectEvent(routinePoolID int64, ip string, port int, retryTimes int, success IConnectSuccess, fail IConnectFail) executor.Event {
+func newWebsocketConnectEvent(routinePoolID int64, ip string, port int, retryTimes int, success IConnectSuccess, fail IConnectFail) Event {
 	instance := new(websocketConnectEvent)
 	instance.routinePoolID = routinePoolID
 	instance.ip = ip
