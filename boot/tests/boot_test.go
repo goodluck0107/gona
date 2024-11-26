@@ -8,10 +8,10 @@ import (
 	"testing"
 	"time"
 
-	"gitee.com/andyxt/gona/bootStrap/bootStrapClient"
-	"gitee.com/andyxt/gona/bootStrap/bootStrapClient/connector"
-	"gitee.com/andyxt/gona/bootStrap/boots"
-	"gitee.com/andyxt/gona/channel"
+	"gitee.com/andyxt/gona/boot/bootc"
+	"gitee.com/andyxt/gona/boot/bootc/connector"
+	"gitee.com/andyxt/gona/boot/boots"
+	"gitee.com/andyxt/gona/boot/channel"
 	"gitee.com/andyxt/gona/executor"
 )
 
@@ -23,7 +23,7 @@ func TestClient(t *testing.T) {
 func testClient() {
 	executor.Init(NewRoutinePoolBuilder())
 	bc :=
-		bootStrapClient.NewClientBootStrap(connector.NormalSocket, 1)
+		bootc.NewClientBootStrap(connector.NormalSocket, 1)
 	connector := bc.GetConnector()
 	bc.
 		ChannelInitializer(

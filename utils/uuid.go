@@ -2,6 +2,6 @@ package utils
 
 import "github.com/gofrs/uuid"
 
-func GetRandomPassword() string {
+func UUID() string {
 	return uuid.Must(uuid.NewV4()).String() //36
 }
