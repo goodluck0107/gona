@@ -1,6 +1,7 @@
 package executor
 
 import (
+	"fmt"
 	"sync"
 
 	"gitee.com/andyxt/gona/logger"
@@ -10,7 +11,7 @@ type TailHandler struct {
 }
 
 func (this *TailHandler) OnExceptionCaught(ctx EventHandlerContext, err error) {
-	logger.Error("exceptionCaught(e = [%#v])\n", err)
+	logger.Error(fmt.Sprintf("exceptionCaught(e = [%#v])\n", err))
 }
 func (this *TailHandler) OnEventUp(ctx EventHandlerContext, e interface{}) (ret interface{}) {
 	return e
