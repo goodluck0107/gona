@@ -7,7 +7,6 @@ import (
 	"strconv"
 	"time"
 
-	"gitee.com/andyxt/gona/buffer"
 	"gitee.com/andyxt/gona/logger"
 	"gitee.com/andyxt/gona/utils"
 )
@@ -73,9 +72,9 @@ func (chanenl *SocketChannelWriter) runWriteRoutine(startChan chan int) {
 				var lengthData []byte
 				packageLength := chanenl.mMessageSpliter.GetBytesCountForMessageLength()
 				if packageLength == 4 {
-					lengthData = buffer.Int32ToByte(int32(messageLength))
+					lengthData = Int32ToByte(int32(messageLength))
 				} else if packageLength == 2 {
-					lengthData = buffer.Int16ToByte(int16(messageLength))
+					lengthData = Int16ToByte(int16(messageLength))
 				} else {
 					logger.Debug("SocketChannelWriter WriteRoutine", "chlCtxID=", chanenl.mContext.ID(), "error:", errors.New("非法包长度："+strconv.Itoa(int(packageLength))))
 					break
@@ -153,3 +152,23 @@ func NewWriteEvent(data []byte, isClose bool) (this *WriteEvent) {
 	this.isClose = isClose
 	return
 }
+
+func Int16ToByte(v int16) (buf []byte) {
+	buf = make([]byte, Int16Size)
+	buf[0] = byte(v >> 8)
+	buf[1] = byte(v)
+	return buf
+}
+func Int32ToByte(v int32) (buf []byte) {
+	buf = make([]byte, Int32Size)
+	buf[0] = byte(v >> 24)
+	buf[1] = byte(v >> 16)
+	buf[2] = byte(v >> 8)
+	buf[3] = byte(v)
+	return buf
+}
+
+const (
+	Int16Size int32 = 2
+	Int32Size int32 = 4
+)
