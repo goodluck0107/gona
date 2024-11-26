@@ -14,9 +14,9 @@ type ClientBootStrap struct {
 	messageSpliter channel.MessageSpliter
 }
 
-func NewClientBootStrap(socketType connector.SocketType, connectRoutinePoolID int64) (this *ClientBootStrap) {
+func NewClientBootStrap(socketType connector.SocketType) (this *ClientBootStrap) {
 	this = new(ClientBootStrap)
-	this.connector, this.acceptor = listener.Create(socketType, connectRoutinePoolID)
+	this.connector, this.acceptor = listener.Create(socketType)
 	return this
 }
 

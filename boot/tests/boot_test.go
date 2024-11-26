@@ -19,7 +19,7 @@ func TestClient(t *testing.T) {
 
 func testClient() {
 	bc :=
-		bootc.NewClientBootStrap(connector.NormalSocket, 1)
+		bootc.NewClientBootStrap(connector.NormalSocket)
 	connector := bc.GetConnector()
 	bc.
 		ChannelInitializer(

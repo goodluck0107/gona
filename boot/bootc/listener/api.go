@@ -11,8 +11,8 @@ type IConnAcceptor interface {
 	AcceptTCP() (*TCPConnWrapper, error)
 }
 
-func Create(socketType connector.SocketType, connectRoutinePoolID int64) (IConnector, IConnAcceptor) {
+func Create(socketType connector.SocketType) (IConnector, IConnAcceptor) {
 	acceptor := newClientTcpAcceptor()
-	connector := newConnector(connector.NewTcpConnector(socketType, connectRoutinePoolID), acceptor)
+	connector := newConnector(connector.NewTcpConnector(socketType), acceptor)
 	return connector, acceptor
 }

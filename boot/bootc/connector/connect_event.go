@@ -22,7 +22,6 @@ type IConnectFail interface {
 }
 
 type Event interface {
-	PoolId() (poolId int64)
 	/**
 	 * 为保证事件序列化执行，需要序列化执行的事件必须提供一致的queueId
 	 * */
@@ -32,27 +31,21 @@ type Event interface {
 }
 
 type connectEvent struct {
-	routinePoolID int64
-	ip            string
-	port          int
-	retryTimes    int
-	success       IConnectSuccess
-	fail          IConnectFail
+	ip         string
+	port       int
+	retryTimes int
+	success    IConnectSuccess
+	fail       IConnectFail
 }
 
-func newConnectEvent(routinePoolID int64, ip string, port int, retryTimes int, success IConnectSuccess, fail IConnectFail) Event {
+func newConnectEvent(ip string, port int, retryTimes int, success IConnectSuccess, fail IConnectFail) Event {
 	instance := new(connectEvent)
-	instance.routinePoolID = routinePoolID
 	instance.ip = ip
 	instance.port = port
 	instance.retryTimes = retryTimes
 	instance.success = success
 	instance.fail = fail
 	return instance
-}
-
-func (connectEvent *connectEvent) PoolId() int64 {
-	return connectEvent.routinePoolID
 }
 
 func (connectEvent *connectEvent) QueueId() int64 {
@@ -101,27 +94,21 @@ func (e *connectEvent) createConn(ip string, port int) (net.Conn, error) {
 }
 
 type websocketConnectEvent struct {
-	routinePoolID int64
-	ip            string
-	port          int
-	retryTimes    int
-	success       IConnectSuccess
-	fail          IConnectFail
+	ip         string
+	port       int
+	retryTimes int
+	success    IConnectSuccess
+	fail       IConnectFail
 }
 
-func newWebsocketConnectEvent(routinePoolID int64, ip string, port int, retryTimes int, success IConnectSuccess, fail IConnectFail) Event {
+func newWebsocketConnectEvent(ip string, port int, retryTimes int, success IConnectSuccess, fail IConnectFail) Event {
 	instance := new(websocketConnectEvent)
-	instance.routinePoolID = routinePoolID
 	instance.ip = ip
 	instance.port = port
 	instance.retryTimes = retryTimes
 	instance.success = success
 	instance.fail = fail
 	return instance
-}
-
-func (connectEvent *websocketConnectEvent) PoolId() int64 {
-	return connectEvent.routinePoolID
 }
 
 func (connectEvent *websocketConnectEvent) QueueId() int64 {
