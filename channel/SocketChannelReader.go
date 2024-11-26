@@ -69,31 +69,23 @@ func (reader *SocketChannelReader) doRead() (data []byte, retErr interface{}) {
 			logger.Error(fmt.Sprint(recoverErr, string(utils.Stack(3))))
 		}
 	}()
-	var messageLength int32
 	var lengthData []byte
 	packageLength := reader.mMessageSpliter.GetBytesCountForMessageLength()
-	if packageLength == 4 {
-		lengthData, retErr = reader.readUntil(int32(packageLength))
-		if retErr != nil {
-			return
-		}
-		messageLength = utils.ByteToInt32(lengthData)
-		// fmt.Println("协议长度：", messageLength, "限制长度：", reader.mChannelReadLimit)
-		if messageLength < 19 || messageLength >= reader.mChannelReadLimit {
-			return nil, errors.New("协议非法，协议长度：" + strconv.Itoa(int(messageLength)) + ",IP:" + reader.mConn.RemoteAddr().String())
-		}
-	} else if packageLength == 2 {
-		lengthData, retErr = reader.readUntil(int32(packageLength))
-		if retErr != nil {
-			return
-		}
-		messageLength = int32(utils.ByteToInt16(lengthData))
-		// fmt.Println("协议长度：", messageLength, "限制长度：", reader.mChannelReadLimit)
-		if messageLength < 19 || messageLength >= reader.mChannelReadLimit {
-			return nil, errors.New("协议非法，协议长度：" + strconv.Itoa(int(messageLength)) + ",IP:" + reader.mConn.RemoteAddr().String())
-		}
-	} else {
+	if packageLength != 2 && packageLength != 4 {
 		return nil, errors.New("非法包长度：" + strconv.Itoa(int(packageLength)))
+	}
+	lengthData, retErr = reader.readUntil(int32(packageLength))
+	if retErr != nil {
+		return
+	}
+	var messageLength int32
+	if packageLength == 4 {
+		messageLength = utils.ByteToInt32(lengthData)
+	} else if packageLength == 2 {
+		messageLength = int32(utils.ByteToInt16(lengthData))
+	}
+	if messageLength < 19 || messageLength >= reader.mChannelReadLimit {
+		return nil, errors.New("协议非法,协议长度:" + strconv.Itoa(int(messageLength)) + ",限制长度:" + strconv.Itoa(int(reader.mChannelReadLimit)) + ",IP:" + reader.mConn.RemoteAddr().String())
 	}
 	var messageData []byte
 	messageData, retErr = reader.readUntil(messageLength)
