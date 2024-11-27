@@ -38,6 +38,7 @@ func NewSocketChannelReader(mConn net.Conn,
 	if this.mPacketBytesCount <= 0 {
 		this.mPacketBytesCount = boot.PacketBytesCount
 	}
+	fmt.Println("mPacketBytesCount", this.mPacketBytesCount, "mChannelReadLimit:", this.mChannelReadLimit)
 	return
 }
 

@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"gitee.com/andyxt/gona/boot"
 	"gitee.com/andyxt/gona/boot/boots"
 	"gitee.com/andyxt/gona/boot/channel"
 )
@@ -17,6 +18,8 @@ func TestClient(t *testing.T) {
 func testServer() {
 	params := make(map[string]interface{})
 	params["key"] = "serverValue"
+	params[boot.KeyPacketBytesCount] = 2
+	params[boot.KeyChannelReadLimit] = 512
 	bs :=
 		boots.NewServerBootStrap().
 			Params(params).

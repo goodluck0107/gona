@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"gitee.com/andyxt/gona/boot"
 	"gitee.com/andyxt/gona/boot/bootc"
 	"gitee.com/andyxt/gona/boot/bootc/connector"
 	"gitee.com/andyxt/gona/boot/channel"
@@ -26,6 +27,8 @@ func testClient() {
 	fmt.Println("Connect")
 	params := make(map[string]interface{})
 	params["key"] = "clientValue"
+	params[boot.KeyPacketBytesCount] = 2
+	params[boot.KeyChannelReadLimit] = 10240
 	connector.Connect("127.0.0.1", 20000, params)
 
 	for {
