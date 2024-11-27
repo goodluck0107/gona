@@ -12,6 +12,8 @@ import (
 	"gitee.com/andyxt/gona/utils"
 )
 
+var writeTimeOut = time.Duration(10) * time.Second
+
 type SocketChannelWriter struct {
 	mConn             net.Conn
 	mContext          Channel
@@ -19,6 +21,7 @@ type SocketChannelWriter struct {
 	mChannelCallBack  IChannelCallBack
 	writeMsgChan      chan *WriteEvent
 	mPacketBytesCount int32
+	mWriteTimeOut     int32
 }
 
 func NewSocketChannelWriter(mConn net.Conn,
@@ -33,6 +36,10 @@ func NewSocketChannelWriter(mConn net.Conn,
 	this.mPacketBytesCount = this.mContext.GetInt32(boot.KeyPacketBytesCount)
 	if this.mPacketBytesCount <= 0 {
 		this.mPacketBytesCount = boot.PacketBytesCount
+	}
+	this.mWriteTimeOut = this.mContext.GetInt32(boot.KeyWriteTimeOut)
+	if this.mWriteTimeOut == 0 {
+		this.mWriteTimeOut = boot.WriteTimeOut
 	}
 	this.writeMsgChan = make(chan *WriteEvent, ChannelChanSize)
 	return
@@ -116,7 +123,11 @@ func (chanenl *SocketChannelWriter) doWrite(data []byte) (err error) {
 	var goal int = len(data)
 	var hasWriteLength int = 0
 	for {
-		timeOutErr := chanenl.mConn.SetWriteDeadline(time.Now().Add(writeTimeOut))
+		var deadTime time.Time
+		if chanenl.mWriteTimeOut > 0 {
+			deadTime = time.Now().Add(time.Duration(chanenl.mWriteTimeOut) * time.Second)
+		}
+		timeOutErr := chanenl.mConn.SetWriteDeadline(deadTime)
 		if timeOutErr != nil {
 			err = timeOutErr
 			return

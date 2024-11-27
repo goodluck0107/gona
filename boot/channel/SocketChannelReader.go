@@ -19,6 +19,7 @@ type SocketChannelReader struct {
 	mChannelCallBack  IChannelCallBack
 	mChannelReadLimit int32
 	mPacketBytesCount int32
+	mReadTimeOut      int32
 }
 
 func NewSocketChannelReader(mConn net.Conn,
@@ -37,6 +38,10 @@ func NewSocketChannelReader(mConn net.Conn,
 	this.mPacketBytesCount = this.mContext.GetInt32(boot.KeyPacketBytesCount)
 	if this.mPacketBytesCount <= 0 {
 		this.mPacketBytesCount = boot.PacketBytesCount
+	}
+	this.mReadTimeOut = this.mContext.GetInt32(boot.KeyReadTimeOut)
+	if this.mReadTimeOut == 0 {
+		this.mReadTimeOut = boot.ReadTimeOut
 	}
 	return
 }
@@ -102,7 +107,11 @@ func (reader *SocketChannelReader) readUntil(goal int32) (head []byte, err error
 	var hasReadLength int32 = 0
 	head = make([]byte, goal)
 	for {
-		timeOutErr := reader.mConn.SetReadDeadline(time.Now().Add(readTimeOut))
+		var deadTime time.Time
+		if reader.mReadTimeOut > 0 {
+			deadTime = time.Now().Add(time.Duration(reader.mReadTimeOut) * time.Second)
+		}
+		timeOutErr := reader.mConn.SetReadDeadline(deadTime)
 		if timeOutErr != nil {
 			err = timeOutErr
 			return

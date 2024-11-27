@@ -29,6 +29,8 @@ func testClient() {
 	params["key"] = "clientValue"
 	params[boot.KeyPacketBytesCount] = 2
 	params[boot.KeyChannelReadLimit] = 10240
+	params[boot.KeyReadTimeOut] = -1
+	params[boot.KeyWriteTimeOut] = -1
 	connector.Connect("127.0.0.1", 20000, params)
 
 	for {

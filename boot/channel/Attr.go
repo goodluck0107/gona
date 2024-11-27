@@ -61,7 +61,7 @@ func (attr *Attr) GetInt8(key string) int8 {
 			return castV
 		}
 	}
-	return -1
+	return 0
 }
 
 func (attr *Attr) GetInt16(key string) int16 {
@@ -73,7 +73,7 @@ func (attr *Attr) GetInt16(key string) int16 {
 			return castV
 		}
 	}
-	return -1
+	return 0
 }
 
 func (attr *Attr) GetInt32(key string) int32 {
@@ -85,7 +85,7 @@ func (attr *Attr) GetInt32(key string) int32 {
 			return castV
 		}
 	}
-	return -1
+	return 0
 }
 
 func (attr *Attr) GetInt64(key string) int64 {
@@ -97,7 +97,7 @@ func (attr *Attr) GetInt64(key string) int64 {
 			return castV
 		}
 	}
-	return -1
+	return 0
 }
 
 func (attr *Attr) GetInt(key string) int {
@@ -109,7 +109,7 @@ func (attr *Attr) GetInt(key string) int {
 			return castV
 		}
 	}
-	return -1
+	return 0
 }
 
 func (attr *Attr) GetString(key string) string {

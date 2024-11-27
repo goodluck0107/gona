@@ -20,6 +20,8 @@ func testServer() {
 	params["key"] = "serverValue"
 	params[boot.KeyPacketBytesCount] = 2
 	params[boot.KeyChannelReadLimit] = 512
+	params[boot.KeyReadTimeOut] = 30
+	params[boot.KeyWriteTimeOut] = 30
 	bs :=
 		boots.NewServerBootStrap().
 			Params(params).
