@@ -8,10 +8,9 @@ import (
 )
 
 type ClientBootStrap struct {
-	acceptor       listener.IConnAcceptor
-	connector      listener.IConnector
-	initializer    channel.ChannelInitializer
-	messageSpliter channel.MessageSpliter
+	acceptor    listener.IConnAcceptor
+	connector   listener.IConnector
+	initializer channel.ChannelInitializer
 }
 
 func NewClientBootStrap(socketType connector.SocketType) (this *ClientBootStrap) {
@@ -29,17 +28,7 @@ func (bootStrap *ClientBootStrap) ChannelInitializer(channelInitializer channel.
 	return bootStrap
 }
 
-func (bootStrap *ClientBootStrap) MessageSpliter(messageSpliter channel.MessageSpliter) (ret *ClientBootStrap) {
-	bootStrap.messageSpliter = messageSpliter
-	return bootStrap
-}
-func (bootStrap *ClientBootStrap) check() {
-	if bootStrap.messageSpliter == nil {
-		bootStrap.messageSpliter = NewDefaultMessageSpliter()
-	}
-}
 func (bootStrap *ClientBootStrap) Listen() {
-	bootStrap.check()
 	go func() {
 		logger.Info("开始接受服务端连接:")
 		for {
@@ -51,7 +40,6 @@ func (bootStrap *ClientBootStrap) Listen() {
 			logger.Info("收到新的服务端连接请求")
 			builder := channel.NewSocketChannelBuilder()
 			builder.Params(conn.GetParams())
-			builder.MessageSpliter(bootStrap.messageSpliter)
 			builder.Create(conn.GetConn(), bootStrap.initializer)
 		}
 	}()

@@ -17,8 +17,8 @@ type SocketChannelReader struct {
 	mContext          Channel
 	mChannelError     IChannelError
 	mChannelCallBack  IChannelCallBack
-	mMessageSpliter   MessageSpliter
 	mChannelReadLimit int32
+	mPacketBytesCount int32
 }
 
 func NewSocketChannelReader(mConn net.Conn,
@@ -34,11 +34,13 @@ func NewSocketChannelReader(mConn net.Conn,
 	if this.mChannelReadLimit <= 0 {
 		this.mChannelReadLimit = boot.ChannelReadLimit
 	}
+	this.mPacketBytesCount = this.mContext.GetInt32(boot.KeyPacketBytesCount)
+	if this.mPacketBytesCount <= 0 {
+		this.mPacketBytesCount = boot.PacketBytesCount
+	}
 	return
 }
-func (reader *SocketChannelReader) SetMessageSpliter(ms MessageSpliter) {
-	reader.mMessageSpliter = ms
-}
+
 func (reader *SocketChannelReader) Start() {
 	startChan := make(chan int, 1)
 	go reader.runReadRoutine(startChan)
@@ -70,7 +72,7 @@ func (reader *SocketChannelReader) doRead() (data []byte, retErr interface{}) {
 		}
 	}()
 	var lengthData []byte
-	packageLength := reader.mMessageSpliter.GetBytesCountForMessageLength()
+	packageLength := reader.mPacketBytesCount
 	if packageLength != 2 && packageLength != 4 {
 		return nil, errors.New("非法包长度：" + strconv.Itoa(int(packageLength)))
 	}

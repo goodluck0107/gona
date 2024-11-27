@@ -11,11 +11,10 @@ import (
 )
 
 type WSServerBootStrap struct {
-	ip             string
-	port           string
-	channelParams  map[string]interface{}
-	initializer    channel.ChannelInitializer
-	messageSpliter channel.MessageSpliter
+	ip            string
+	port          string
+	channelParams map[string]interface{}
+	initializer   channel.ChannelInitializer
 }
 
 func NewWSServerBootStrap() (this *WSServerBootStrap) {
@@ -40,15 +39,7 @@ func (bootStrap *WSServerBootStrap) ChannelInitializer(channelInitializer channe
 	return bootStrap
 }
 
-func (bootStrap *WSServerBootStrap) MessageSpliter(messageSpliter channel.MessageSpliter) (ret *WSServerBootStrap) {
-	bootStrap.messageSpliter = messageSpliter
-	return bootStrap
-}
-
 func (bootStrap *WSServerBootStrap) check() {
-	if bootStrap.messageSpliter == nil {
-		bootStrap.messageSpliter = NewDefaultMessageSpliter()
-	}
 	if bootStrap.channelParams == nil {
 		bootStrap.channelParams = make(map[string]interface{})
 	}
@@ -76,6 +67,5 @@ func (bootStrap *WSServerBootStrap) ServeHTTP(writer http.ResponseWriter, req *h
 	utils.SetWebSocketConnParam(conn)
 	builder := channel.NewSocketChannelBuilder()
 	builder.Params(bootStrap.channelParams)
-	builder.MessageSpliter(bootStrap.messageSpliter)
 	builder.Create(conn, bootStrap.initializer)
 }

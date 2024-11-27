@@ -7,17 +7,18 @@ import (
 	"strconv"
 	"time"
 
+	"gitee.com/andyxt/gona/boot"
 	"gitee.com/andyxt/gona/logger"
 	"gitee.com/andyxt/gona/utils"
 )
 
 type SocketChannelWriter struct {
-	mConn            net.Conn
-	mContext         Channel
-	mChannelError    IChannelError
-	mChannelCallBack IChannelCallBack
-	writeMsgChan     chan *WriteEvent
-	mMessageSpliter  MessageSpliter
+	mConn             net.Conn
+	mContext          Channel
+	mChannelError     IChannelError
+	mChannelCallBack  IChannelCallBack
+	writeMsgChan      chan *WriteEvent
+	mPacketBytesCount int32
 }
 
 func NewSocketChannelWriter(mConn net.Conn,
@@ -29,6 +30,10 @@ func NewSocketChannelWriter(mConn net.Conn,
 	this.mContext = mContext
 	this.mChannelError = mChannelError
 	this.mChannelCallBack = mChannelCallBack
+	this.mPacketBytesCount = this.mContext.GetInt32(boot.KeyPacketBytesCount)
+	if this.mPacketBytesCount <= 0 {
+		this.mPacketBytesCount = boot.PacketBytesCount
+	}
 	this.writeMsgChan = make(chan *WriteEvent, ChannelChanSize)
 	return
 }
@@ -48,9 +53,7 @@ func (chanenl *SocketChannelWriter) Close() {
 	}()
 	chanenl.writeMsgChan <- NewWriteEvent(nil, true)
 }
-func (writer *SocketChannelWriter) SetMessageSpliter(ms MessageSpliter) {
-	writer.mMessageSpliter = ms
-}
+
 func (chanenl *SocketChannelWriter) Start() {
 	startChan := make(chan int, 1)
 	go chanenl.runWriteRoutine(startChan)
@@ -70,7 +73,7 @@ func (chanenl *SocketChannelWriter) runWriteRoutine(startChan chan int) {
 			if data != nil {
 				var messageLength = len(data)
 				var lengthData []byte
-				packageLength := chanenl.mMessageSpliter.GetBytesCountForMessageLength()
+				packageLength := chanenl.mPacketBytesCount
 				if packageLength == 4 {
 					lengthData = Int32ToByte(int32(messageLength))
 				} else if packageLength == 2 {

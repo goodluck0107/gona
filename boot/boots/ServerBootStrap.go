@@ -9,11 +9,10 @@ import (
 )
 
 type ServerBootStrap struct {
-	ip             string
-	port           string
-	channelParams  map[string]interface{}
-	initializer    channel.ChannelInitializer
-	messageSpliter channel.MessageSpliter
+	ip            string
+	port          string
+	channelParams map[string]interface{}
+	initializer   channel.ChannelInitializer
 }
 
 func NewServerBootStrap() (this *ServerBootStrap) {
@@ -38,15 +37,7 @@ func (bootStrap *ServerBootStrap) ChannelInitializer(channelInitializer channel.
 	return bootStrap
 }
 
-func (bootStrap *ServerBootStrap) MessageSpliter(messageSpliter channel.MessageSpliter) (ret *ServerBootStrap) {
-	bootStrap.messageSpliter = messageSpliter
-	return bootStrap
-}
-
 func (bootStrap *ServerBootStrap) check() {
-	if bootStrap.messageSpliter == nil {
-		bootStrap.messageSpliter = NewDefaultMessageSpliter()
-	}
 	if bootStrap.channelParams == nil {
 		bootStrap.channelParams = make(map[string]interface{})
 	}
@@ -75,7 +66,6 @@ func (bootStrap *ServerBootStrap) Listen() (err error) {
 		utils.SetConnParam(conn)
 		builder := channel.NewSocketChannelBuilder()
 		builder.Params(bootStrap.channelParams)
-		builder.MessageSpliter(bootStrap.messageSpliter)
 		builder.Create(conn, bootStrap.initializer)
 	}
 }

@@ -50,11 +50,6 @@ func (chanenl *SocketChannel) ID() string {
 	return chanenl.GetString(ChannelKey)
 }
 
-func (chanenl *SocketChannel) SetMessageSpliter(ms MessageSpliter) {
-	chanenl.mReader.SetMessageSpliter(ms)
-	chanenl.mWriter.SetMessageSpliter(ms)
-}
-
 func (chanenl *SocketChannel) Start() {
 	chanenl.startRead()
 	chanenl.startWrite()
