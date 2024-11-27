@@ -33,8 +33,13 @@ func (bootStrap *ClientBootStrap) MessageSpliter(messageSpliter channel.MessageS
 	bootStrap.messageSpliter = messageSpliter
 	return bootStrap
 }
-
+func (bootStrap *ClientBootStrap) check() {
+	if bootStrap.messageSpliter == nil {
+		bootStrap.messageSpliter = NewDefaultMessageSpliter()
+	}
+}
 func (bootStrap *ClientBootStrap) Listen() {
+	bootStrap.check()
 	go func() {
 		logger.Info("开始接受服务端连接:")
 		for {
