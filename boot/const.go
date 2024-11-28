@@ -9,4 +9,7 @@ const (
 	ReadTimeOut         int32 = 30                    // 30秒
 	KeyWriteTimeOut           = "KeyWriteTimeOut"     // 连接写入消息超时时间
 	WriteTimeOut        int32 = 30                    // 30秒
+	KeyConnType               = "KeyConnType"         // 连接类型
+	KeyIP                     = "KeyIP"               // 连接IP
+	KeyPort                   = "KeyPort"             // 连接端口
 )
