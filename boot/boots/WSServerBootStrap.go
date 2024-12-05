@@ -2,6 +2,7 @@ package boots
 
 import (
 	"fmt"
+	"net"
 	"net/http"
 
 	"gitee.com/andyxt/gona/boot/boots/wsupgrader"
@@ -64,8 +65,13 @@ func (bootStrap *WSServerBootStrap) ServeHTTP(writer http.ResponseWriter, req *h
 		logger.Error("WSServerBootStrap 接受客户端连接异常:", err.Error())
 		return
 	}
-	utils.SetWebSocketConnParam(conn)
+	SetWebSocketConnParam(conn)
 	builder := channel.NewSocketChannelBuilder()
 	builder.Params(bootStrap.channelParams)
 	builder.Create(conn, bootStrap.initializer)
+}
+
+// 设置Tcp参数
+func SetWebSocketConnParam(conn net.Conn) {
+
 }

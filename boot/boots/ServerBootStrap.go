@@ -5,7 +5,6 @@ import (
 
 	"gitee.com/andyxt/gona/boot/channel"
 	"gitee.com/andyxt/gona/logger"
-	"gitee.com/andyxt/gona/utils"
 )
 
 type ServerBootStrap struct {
@@ -63,9 +62,16 @@ func (bootStrap *ServerBootStrap) Listen() (err error) {
 			continue
 		}
 		logger.Info("ServerBootStrap 收到新的客户端连接请求:", conn.RemoteAddr())
-		utils.SetConnParam(conn)
+		SetConnParam(conn)
 		builder := channel.NewSocketChannelBuilder()
 		builder.Params(bootStrap.channelParams)
 		builder.Create(conn, bootStrap.initializer)
 	}
+}
+
+// 设置Tcp参数
+func SetConnParam(conn *net.TCPConn) {
+	conn.SetNoDelay(true)
+	conn.SetKeepAlive(true)
+	conn.SetLinger(8)
 }
