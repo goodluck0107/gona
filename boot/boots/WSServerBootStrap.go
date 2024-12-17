@@ -13,7 +13,10 @@ import (
 
 type WSServerBootStrap struct {
 	ip            string
-	port          string
+	port          string // port for ws
+	sport         string // port for wss
+	crt           string // crt for wss
+	key           string // key for wss
 	channelParams map[string]interface{}
 	initializer   channel.ChannelInitializer
 }
@@ -35,6 +38,21 @@ func (bootStrap *WSServerBootStrap) Port(port string) (ret *WSServerBootStrap) {
 	return bootStrap
 }
 
+func (bootStrap *WSServerBootStrap) SPort(port string) (ret *WSServerBootStrap) {
+	bootStrap.sport = port
+	return bootStrap
+}
+
+func (bootStrap *WSServerBootStrap) Crt(crt string) (ret *WSServerBootStrap) {
+	bootStrap.crt = crt
+	return bootStrap
+}
+
+func (bootStrap *WSServerBootStrap) Key(key string) (ret *WSServerBootStrap) {
+	bootStrap.key = key
+	return bootStrap
+}
+
 func (bootStrap *WSServerBootStrap) ChannelInitializer(channelInitializer channel.ChannelInitializer) (ret *WSServerBootStrap) {
 	bootStrap.initializer = channelInitializer
 	return bootStrap
@@ -48,8 +66,16 @@ func (bootStrap *WSServerBootStrap) check() {
 
 func (bootStrap *WSServerBootStrap) Listen() {
 	bootStrap.check()
+	if bootStrap.sport != "" && bootStrap.crt != "" && bootStrap.key != "" {
+		go func() {
+			logger.StartUp("WSServerBootStrap 开始接受客户端wss连接:", bootStrap.sport)
+			err := http.ListenAndServeTLS(bootStrap.sport, bootStrap.crt, bootStrap.key,
+				bootStrap)
+			utils.CheckError(err)
+		}()
+	}
 	go func() {
-		logger.StartUp("WSServerBootStrap 开始接受客户端连接:", bootStrap.port)
+		logger.StartUp("WSServerBootStrap 开始接受客户端ws连接:", bootStrap.port)
 		// http.Handle("/ws", websocket.Handler(bootStrap.OnWebSocket))
 		err := http.ListenAndServe(bootStrap.port, bootStrap)
 		utils.CheckError(err)
