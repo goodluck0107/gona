@@ -89,10 +89,12 @@ func (chanenl *SocketChannelWriter) runWriteRoutine(startChan chan int) {
 					logger.Debug("SocketChannelWriter WriteRoutine", "chlCtxID=", chanenl.mContext.ID(), "error:", errors.New("非法包长度："+strconv.Itoa(int(packageLength))))
 					break
 				}
+				logger.Debug("lengthData:", lengthData)
 				if err := chanenl.doWrite(lengthData); err != nil {
 					logger.Debug("SocketChannelWriter WriteRoutine", "chlCtxID=", chanenl.mContext.ID(), "error:", errors.New("非法包长度："+strconv.Itoa(int(packageLength))))
 					break
 				}
+				logger.Debug("messageData:", data)
 				if err := chanenl.doWrite(data); err != nil {
 					logger.Debug("SocketChannelWriter WriteRoutine", "chlCtxID=", chanenl.mContext.ID(), "error:", errors.New("非法包长度："+strconv.Itoa(int(packageLength))))
 					break
