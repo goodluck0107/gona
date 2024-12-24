@@ -85,7 +85,7 @@ func (reader *SocketChannelReader) doRead() (data []byte, retErr interface{}) {
 	if retErr != nil {
 		return
 	}
-	logger.Debug("lengthData:", lengthData)
+	logger.Debug("SocketChannelReader lengthData:", lengthData)
 	var messageLength int32
 	if packageLength == 4 {
 		messageLength = utils.ByteToInt32(lengthData)
@@ -100,7 +100,7 @@ func (reader *SocketChannelReader) doRead() (data []byte, retErr interface{}) {
 	if retErr != nil {
 		return
 	}
-	logger.Debug("messageData:", messageData)
+	logger.Debug("SocketChannelReader messageData:", messageData)
 	data = messageData
 	return
 }

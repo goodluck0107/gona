@@ -90,7 +90,7 @@ func (chanenl *SocketChannelWriter) runWriteRoutine(startChan chan int) {
 					break
 				}
 				data = append(lengthData, data...)
-				logger.Debug("messageData:", data)
+				logger.Debug("SocketChannelWriter messageData:", data)
 				if err := chanenl.doWrite(data); err != nil {
 					logger.Debug("SocketChannelWriter WriteRoutine", "chlCtxID=", chanenl.mContext.ID(), "error:", errors.New("非法包长度："+strconv.Itoa(int(packageLength))))
 					break
