@@ -181,6 +181,9 @@ var warnLogger *MyLog = NewMyLog("warnLog")
 var debugLogger *MyLog = NewMyLog("debugLog")
 
 func StartUp(v ...interface{}) {
+	if printLevel >= LogLevelDebug {
+		fmt.Println(v...)
+	}
 	startUpLogger.Println(v...)
 }
 
