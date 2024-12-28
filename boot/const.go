@@ -12,4 +12,5 @@ const (
 	KeyConnType               = "KeyConnType"         // 连接类型
 	KeyIP                     = "KeyIP"               // 连接IP
 	KeyPort                   = "KeyPort"             // 连接端口
+	KeyURLPath                = "URLPath"             // 请求路径
 )

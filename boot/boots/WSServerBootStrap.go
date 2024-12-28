@@ -5,6 +5,7 @@ import (
 	"net"
 	"net/http"
 
+	"gitee.com/andyxt/gona/boot"
 	"gitee.com/andyxt/gona/boot/boots/wsupgrader"
 	"gitee.com/andyxt/gona/boot/channel"
 	"gitee.com/andyxt/gona/logger"
@@ -91,9 +92,14 @@ func (bootStrap *WSServerBootStrap) ServeHTTP(writer http.ResponseWriter, req *h
 		logger.Error("WSServerBootStrap 接受客户端连接异常:", err.Error())
 		return
 	}
+	connParams := make(map[string]interface{})
+	for k, v := range bootStrap.channelParams {
+		connParams[k] = v
+	}
+	connParams[boot.KeyURLPath] = req.URL.Path
 	SetWebSocketConnParam(conn)
 	builder := channel.NewSocketChannelBuilder()
-	builder.Params(bootStrap.channelParams)
+	builder.Params(connParams)
 	builder.Create(conn, bootStrap.initializer)
 }
 
