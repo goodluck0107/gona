@@ -83,7 +83,7 @@ func (bootStrap *WSServerBootStrap) Listen() {
 }
 
 func (bootStrap *WSServerBootStrap) ServeHTTP(writer http.ResponseWriter, req *http.Request) {
-	logger.Info(fmt.Sprintf("WSServerBootStrap 收到新的客户端连接请求: %s %s %s %s\n", req.RemoteAddr, req.Method, req.URL, req.Proto))
+	logger.Info(fmt.Sprintf("WSServerBootStrap 收到新的客户端连接请求: %s %s %s %s", req.RemoteAddr, req.Method, req.URL, req.Proto))
 	// 把 HTTP 请求升级转换为 WebSocket 连接, 并写出 状态行 和 响应头。
 	// conn 表示一个 WebSocket 连接, 调用此方法后状态行和响应头已写出, 不能再调用 writer.WriteHeader() 方法。
 	conn, err := wsupgrader.NewUpgrader().Upgrade(writer, req, nil)
