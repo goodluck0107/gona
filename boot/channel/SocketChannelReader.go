@@ -102,7 +102,7 @@ func (reader *SocketChannelReader) doRead() (data []byte, retErr interface{}) {
 			messageLength = int32(utils.ByteToInt16(lengthData))
 		}
 	}
-	if messageLength < 19 || messageLength >= reader.mChannelReadLimit {
+	if messageLength < 0 || messageLength >= reader.mChannelReadLimit {
 		return nil, errors.New("协议非法,协议长度:" + strconv.Itoa(int(messageLength)) + ",限制长度:" + strconv.Itoa(int(reader.mChannelReadLimit)) + ",IP:" + reader.mConn.RemoteAddr().String())
 	}
 	var messageData []byte
