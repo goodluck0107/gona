@@ -22,6 +22,7 @@ type SocketChannelWriter struct {
 	writeMsgChan      chan *WriteEvent
 	mPacketBytesCount int32
 	mWriteTimeOut     int32
+	mIsLD             bool
 }
 
 func NewSocketChannelWriter(mConn net.Conn,
@@ -41,6 +42,7 @@ func NewSocketChannelWriter(mConn net.Conn,
 	if this.mWriteTimeOut == 0 {
 		this.mWriteTimeOut = boot.WriteTimeOut
 	}
+	this.mIsLD = this.mContext.GetBool(boot.KeyIsLD)
 	this.writeMsgChan = make(chan *WriteEvent, ChannelChanSize)
 	return
 }
@@ -82,9 +84,17 @@ func (chanenl *SocketChannelWriter) runWriteRoutine(startChan chan int) {
 				var lengthData []byte
 				packageLength := chanenl.mPacketBytesCount
 				if packageLength == 4 {
-					lengthData = Int32ToByte(int32(messageLength))
+					if chanenl.mIsLD {
+						lengthData = Int32ToByteLD(int32(messageLength))
+					} else {
+						lengthData = Int32ToByte(int32(messageLength))
+					}
 				} else if packageLength == 2 {
-					lengthData = Int16ToByte(int16(messageLength))
+					if chanenl.mIsLD {
+						lengthData = Int16ToByteLD(int16(messageLength))
+					} else {
+						lengthData = Int16ToByte(int16(messageLength))
+					}
 				} else {
 					logger.Debug("SocketChannelWriter WriteRoutine", "chlCtxID=", chanenl.mContext.ID(), "error:", errors.New("非法包长度："+strconv.Itoa(int(packageLength))))
 					break
@@ -177,6 +187,20 @@ func Int32ToByte(v int32) (buf []byte) {
 	buf[1] = byte(v >> 16)
 	buf[2] = byte(v >> 8)
 	buf[3] = byte(v)
+	return buf
+}
+func Int16ToByteLD(v int16) (buf []byte) {
+	buf = make([]byte, Int16Size)
+	buf[0] = byte(v)
+	buf[1] = byte(v >> 8)
+	return buf
+}
+func Int32ToByteLD(v int32) (buf []byte) {
+	buf = make([]byte, Int32Size)
+	buf[0] = byte(v)
+	buf[1] = byte(v >> 8)
+	buf[2] = byte(v >> 16)
+	buf[3] = byte(v >> 24)
 	return buf
 }
 

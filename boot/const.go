@@ -13,4 +13,5 @@ const (
 	KeyIP                     = "KeyIP"               // 连接IP
 	KeyPort                   = "KeyPort"             // 连接端口
 	KeyURLPath                = "URLPath"             // 请求路径
+	KeyIsLD                   = "KeyIsLD"             // 是否小端
 )
