@@ -21,6 +21,7 @@ type SocketChannelReader struct {
 	mPacketBytesCount int32
 	mReadTimeOut      int32
 	mIsLD             bool
+	mLengthInclude    bool
 }
 
 func NewSocketChannelReader(mConn net.Conn,
@@ -45,6 +46,7 @@ func NewSocketChannelReader(mConn net.Conn,
 		this.mReadTimeOut = boot.ReadTimeOut
 	}
 	this.mIsLD = this.mContext.GetBool(boot.KeyIsLD)
+	this.mLengthInclude = this.mContext.GetBool(boot.KeyLengthInclude)
 	return
 }
 
@@ -104,6 +106,9 @@ func (reader *SocketChannelReader) doRead() (data []byte, retErr interface{}) {
 	}
 	if messageLength < 0 || messageLength >= reader.mChannelReadLimit {
 		return nil, errors.New("协议非法,协议长度:" + strconv.Itoa(int(messageLength)) + ",限制长度:" + strconv.Itoa(int(reader.mChannelReadLimit)) + ",IP:" + reader.mConn.RemoteAddr().String())
+	}
+	if reader.mLengthInclude {
+		messageLength = messageLength - reader.mPacketBytesCount
 	}
 	var messageData []byte
 	messageData, retErr = reader.readUntil(messageLength)

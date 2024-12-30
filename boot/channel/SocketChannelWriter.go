@@ -23,6 +23,7 @@ type SocketChannelWriter struct {
 	mPacketBytesCount int32
 	mWriteTimeOut     int32
 	mIsLD             bool
+	mLengthInclude    bool
 }
 
 func NewSocketChannelWriter(mConn net.Conn,
@@ -43,6 +44,7 @@ func NewSocketChannelWriter(mConn net.Conn,
 		this.mWriteTimeOut = boot.WriteTimeOut
 	}
 	this.mIsLD = this.mContext.GetBool(boot.KeyIsLD)
+	this.mLengthInclude = this.mContext.GetBool(boot.KeyLengthInclude)
 	this.writeMsgChan = make(chan *WriteEvent, ChannelChanSize)
 	return
 }
@@ -81,6 +83,9 @@ func (chanenl *SocketChannelWriter) runWriteRoutine(startChan chan int) {
 			data := writeEvent.data
 			if data != nil {
 				var messageLength = len(data)
+				if chanenl.mLengthInclude {
+					messageLength = messageLength + int(chanenl.mPacketBytesCount)
+				}
 				var lengthData []byte
 				packageLength := chanenl.mPacketBytesCount
 				if packageLength == 4 {

@@ -14,4 +14,5 @@ const (
 	KeyPort                   = "KeyPort"             // 连接端口
 	KeyURLPath                = "URLPath"             // 请求路径
 	KeyIsLD                   = "KeyIsLD"             // 是否小端
+	KeyLengthInclude          = "KeyLengthInclude"    // 包长度是否包含自己的长度
 )
