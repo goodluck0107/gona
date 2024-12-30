@@ -14,10 +14,10 @@ const (
 	BYTES_PREFIX  int32 = 2
 )
 
-func ByteToInt16Big(buf []byte) (ret int16) {
+func ByteToInt16LD(buf []byte) (ret int16) {
 	length := int32(len(buf))
 	if length < INT16_SIZE {
-		err := errors.New("ByteToInt16() 越界,length=" + strconv.Itoa(int(length)))
+		err := errors.New("ByteToInt16LD() 越界,length=" + strconv.Itoa(int(length)))
 		panic(err)
 	}
 	ret = int16(buf[1])<<8 | int16(buf[0])
@@ -32,10 +32,10 @@ func ByteToInt16(buf []byte) (ret int16) {
 	ret = int16(buf[0])<<8 | int16(buf[1])
 	return
 }
-func ByteToInt32Big(buf []byte) (ret int32) {
+func ByteToInt32LD(buf []byte) (ret int32) {
 	length := int32(len(buf))
 	if length < INT32_SIZE {
-		err := errors.New("ByteToInt32() 越界,length=" + strconv.Itoa(int(length)))
+		err := errors.New("ByteToInt32LD() 越界,length=" + strconv.Itoa(int(length)))
 		panic(err)
 	}
 	ret = int32(buf[3])<<24 | int32(buf[2])<<16 | int32(buf[1])<<8 | int32(buf[0])
@@ -63,11 +63,24 @@ func ByteToInt64(buf []byte) (ret int64) {
 	}
 	return
 }
-
+func Int16ToByteLD(v int16) (buf []byte) {
+	buf = make([]byte, INT16_SIZE)
+	buf[0] = byte(v)
+	buf[1] = byte(v >> 8)
+	return buf
+}
 func Int16ToByte(v int16) (buf []byte) {
 	buf = make([]byte, INT16_SIZE)
 	buf[0] = byte(v >> 8)
 	buf[1] = byte(v)
+	return buf
+}
+func Int32ToByteLD(v int32) (buf []byte) {
+	buf = make([]byte, INT32_SIZE)
+	buf[0] = byte(v)
+	buf[1] = byte(v >> 8)
+	buf[2] = byte(v >> 16)
+	buf[3] = byte(v >> 24)
 	return buf
 }
 func Int32ToByte(v int32) (buf []byte) {
