@@ -68,7 +68,9 @@ func (reader *SocketChannelReader) runReadRoutine(startChan chan int) {
 	reader.mChannelCallBack.Active()
 	for {
 		if protocolData, err := reader.doRead(); err == nil {
-			reader.mChannelCallBack.MsgReceived(protocolData)
+			if len(protocolData) > 0 {
+				reader.mChannelCallBack.MsgReceived(protocolData)
+			}
 		} else {
 			logger.Warn("SocketChannelReader ReadRoutine", "chlCtxID=", reader.mContext.ID(), "error:", err)
 			break
@@ -151,7 +153,7 @@ func (reader *SocketChannelReader) readAll() (head []byte, err error) {
 	if i > 0 {
 		return ret[:i], nil
 	}
-	return ret, errors.New("read count < 0")
+	return nil, nil
 }
 
 func (reader *SocketChannelReader) readUntil(goal int32) (head []byte, err error) {
