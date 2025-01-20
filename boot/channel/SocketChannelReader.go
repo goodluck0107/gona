@@ -13,15 +13,16 @@ import (
 )
 
 type SocketChannelReader struct {
-	mConn             net.Conn
-	mContext          Channel
-	mChannelError     IChannelError
-	mChannelCallBack  IChannelCallBack
-	mChannelReadLimit int32
-	mPacketBytesCount int32
-	mReadTimeOut      int32
-	mIsLD             bool
-	mLengthInclude    bool
+	mConn                 net.Conn
+	mContext              Channel
+	mChannelError         IChannelError
+	mChannelCallBack      IChannelCallBack
+	mChannelReadLimit     int32
+	mPacketBytesCount     int32
+	mReadTimeOut          int32
+	mIsLD                 bool
+	mLengthInclude        bool
+	mSkipPacketBytesCount bool
 }
 
 func NewSocketChannelReader(mConn net.Conn,
@@ -47,6 +48,7 @@ func NewSocketChannelReader(mConn net.Conn,
 	}
 	this.mIsLD = this.mContext.GetBool(boot.KeyIsLD)
 	this.mLengthInclude = this.mContext.GetBool(boot.KeyLengthInclude)
+	this.mSkipPacketBytesCount = this.mContext.GetBool(boot.SkipPacketBytesCount)
 	return
 }
 
@@ -80,44 +82,76 @@ func (reader *SocketChannelReader) doRead() (data []byte, retErr interface{}) {
 			logger.Error(fmt.Sprint(recoverErr, string(utils.Stack(3))))
 		}
 	}()
-	var lengthData []byte
-	packageLength := reader.mPacketBytesCount
-	if packageLength != 2 && packageLength != 4 {
-		return nil, errors.New("非法包长度：" + strconv.Itoa(int(packageLength)))
-	}
-	lengthData, retErr = reader.readUntil(int32(packageLength))
-	if retErr != nil {
-		return
-	}
-	logger.Debug("SocketChannelReader lengthData:", lengthData)
-	var messageLength int32
-	if packageLength == 4 {
-		if reader.mIsLD {
-			messageLength = utils.ByteToInt32LD(lengthData)
-		} else {
-			messageLength = utils.ByteToInt32(lengthData)
+	if !reader.mSkipPacketBytesCount { // 不跳过消息包长度
+		var messageLength int32
+		var lengthData []byte
+		packageLength := reader.mPacketBytesCount
+		if packageLength != 2 && packageLength != 4 {
+			return nil, errors.New("非法包长度：" + strconv.Itoa(int(packageLength)))
 		}
-	} else if packageLength == 2 {
-		if reader.mIsLD {
-			messageLength = int32(utils.ByteToInt16LD(lengthData))
-		} else {
-			messageLength = int32(utils.ByteToInt16(lengthData))
+		lengthData, retErr = reader.readUntil(int32(packageLength))
+		if retErr != nil {
+			return
 		}
+		logger.Debug("SocketChannelReader lengthData:", lengthData)
+		if packageLength == 4 {
+			if reader.mIsLD {
+				messageLength = utils.ByteToInt32LD(lengthData)
+			} else {
+				messageLength = utils.ByteToInt32(lengthData)
+			}
+		} else if packageLength == 2 {
+			if reader.mIsLD {
+				messageLength = int32(utils.ByteToInt16LD(lengthData))
+			} else {
+				messageLength = int32(utils.ByteToInt16(lengthData))
+			}
+		}
+		if messageLength < 0 || messageLength >= reader.mChannelReadLimit {
+			return nil, errors.New("协议非法,协议长度:" + strconv.Itoa(int(messageLength)) + ",限制长度:" + strconv.Itoa(int(reader.mChannelReadLimit)) + ",IP:" + reader.mConn.RemoteAddr().String())
+		}
+		if reader.mLengthInclude {
+			messageLength = messageLength - reader.mPacketBytesCount
+		}
+		var messageData []byte
+		messageData, retErr = reader.readUntil(messageLength)
+		if retErr != nil {
+			return
+		}
+		logger.Debug("SocketChannelReader messageData:", messageData)
+		data = messageData
+	} else {
+		var messageData []byte
+		messageData, retErr = reader.readAll()
+		if retErr != nil {
+			return
+		}
+		logger.Debug("SocketChannelReader messageData:", messageData)
+		data = messageData
 	}
-	if messageLength < 0 || messageLength >= reader.mChannelReadLimit {
-		return nil, errors.New("协议非法,协议长度:" + strconv.Itoa(int(messageLength)) + ",限制长度:" + strconv.Itoa(int(reader.mChannelReadLimit)) + ",IP:" + reader.mConn.RemoteAddr().String())
-	}
-	if reader.mLengthInclude {
-		messageLength = messageLength - reader.mPacketBytesCount
-	}
-	var messageData []byte
-	messageData, retErr = reader.readUntil(messageLength)
-	if retErr != nil {
-		return
-	}
-	logger.Debug("SocketChannelReader messageData:", messageData)
-	data = messageData
 	return
+}
+
+func (reader *SocketChannelReader) readAll() (head []byte, err error) {
+	ret := make([]byte, reader.mChannelReadLimit)
+	var deadTime time.Time
+	if reader.mReadTimeOut > 0 {
+		deadTime = time.Now().Add(time.Duration(reader.mReadTimeOut) * time.Second)
+	}
+	timeOutErr := reader.mConn.SetReadDeadline(deadTime)
+	if timeOutErr != nil {
+		err = timeOutErr
+		return
+	}
+	i, err1 := reader.mConn.Read(ret)
+	if err1 != nil {
+		err = err1
+		return
+	}
+	if i > 0 {
+		return ret[:i], nil
+	}
+	return ret, errors.New("read count < 0")
 }
 
 func (reader *SocketChannelReader) readUntil(goal int32) (head []byte, err error) {
