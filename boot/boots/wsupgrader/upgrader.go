@@ -22,11 +22,11 @@ func NewUpgrader() *Upgrader {
 	}
 }
 
-func (u *Upgrader) Upgrade(w http.ResponseWriter, r *http.Request, params map[string]string) (net.Conn, error) {
+func (u *Upgrader) Upgrade(w http.ResponseWriter, r *http.Request, params map[string]string, msgType int) (net.Conn, error) {
 	conn, err := u.Upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	return NewConn(r, conn), nil
+	return NewConn(r, conn, msgType), nil
 }

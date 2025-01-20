@@ -14,15 +14,16 @@ import (
 // Conn is an adapter to t.Conn, which implements all t.Conn
 // interface base on *websocket.Conn
 type Conn struct {
-	r      *http.Request
-	conn   *websocket.Conn
-	typ    int // message type
-	reader io.Reader
+	r       *http.Request
+	conn    *websocket.Conn
+	typ     int // message type
+	reader  io.Reader
+	msgType int
 }
 
 // NewWSConn return an initialized *WSConn
-func NewConn(r *http.Request, conn *websocket.Conn) *Conn {
-	return &Conn{r: r, conn: conn}
+func NewConn(r *http.Request, conn *websocket.Conn, msgType int) *Conn {
+	return &Conn{r: r, conn: conn, msgType: msgType}
 }
 
 // Read reads data from the connection.
@@ -56,7 +57,7 @@ func (c *Conn) Read(b []byte) (int, error) {
 // Write can be made to time out and return an Error with Timeout() == true
 // after a fixed time limit; see SetDeadline and SetWriteDeadline.
 func (c *Conn) Write(b []byte) (int, error) {
-	err := c.conn.WriteMessage(websocket.BinaryMessage, b)
+	err := c.conn.WriteMessage(c.msgType, b) //websocket.BinaryMessage
 	if err != nil {
 		return 0, err
 	}

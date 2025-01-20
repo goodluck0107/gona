@@ -20,17 +20,24 @@ type WSServerBootStrap struct {
 	key           string // key for wss
 	channelParams map[string]interface{}
 	initializer   channel.ChannelInitializer
+	msgType       int
 }
 
 func NewWSServerBootStrap() (this *WSServerBootStrap) {
 	this = new(WSServerBootStrap)
 	this.ip = DefaultIp
 	this.port = DefaultPort
+	this.msgType = DefaultMsgType
 	return
 }
 
 func (bootStrap *WSServerBootStrap) Params(channelParams map[string]interface{}) (ret *WSServerBootStrap) {
 	bootStrap.channelParams = channelParams
+	return bootStrap
+}
+
+func (bootStrap *WSServerBootStrap) MsgType(msgType int) (ret *WSServerBootStrap) {
+	bootStrap.msgType = msgType
 	return bootStrap
 }
 
@@ -87,7 +94,7 @@ func (bootStrap *WSServerBootStrap) ServeHTTP(writer http.ResponseWriter, req *h
 	logger.Info(fmt.Sprintf("WSServerBootStrap 收到新的客户端连接请求: %s %s %s %s", req.RemoteAddr, req.Method, req.URL, req.Proto))
 	// 把 HTTP 请求升级转换为 WebSocket 连接, 并写出 状态行 和 响应头。
 	// conn 表示一个 WebSocket 连接, 调用此方法后状态行和响应头已写出, 不能再调用 writer.WriteHeader() 方法。
-	conn, err := wsupgrader.NewUpgrader().Upgrade(writer, req, nil)
+	conn, err := wsupgrader.NewUpgrader().Upgrade(writer, req, nil, bootStrap.msgType)
 	if err != nil {
 		logger.Error("WSServerBootStrap 接受客户端连接异常:", err.Error())
 		return
