@@ -15,15 +15,16 @@ import (
 var writeTimeOut = time.Duration(10) * time.Second
 
 type SocketChannelWriter struct {
-	mConn             net.Conn
-	mContext          Channel
-	mChannelError     IChannelError
-	mChannelCallBack  IChannelCallBack
-	writeMsgChan      chan *WriteEvent
-	mPacketBytesCount int32
-	mWriteTimeOut     int32
-	mIsLD             bool
-	mLengthInclude    bool
+	mConn                 net.Conn
+	mContext              Channel
+	mChannelError         IChannelError
+	mChannelCallBack      IChannelCallBack
+	writeMsgChan          chan *WriteEvent
+	mPacketBytesCount     int32
+	mWriteTimeOut         int32
+	mIsLD                 bool
+	mLengthInclude        bool
+	mSkipPacketBytesCount bool
 }
 
 func NewSocketChannelWriter(mConn net.Conn,
@@ -46,6 +47,7 @@ func NewSocketChannelWriter(mConn net.Conn,
 	this.mIsLD = this.mContext.GetBool(boot.KeyIsLD)
 	this.mLengthInclude = this.mContext.GetBool(boot.KeyLengthInclude)
 	this.writeMsgChan = make(chan *WriteEvent, ChannelChanSize)
+	this.mSkipPacketBytesCount = this.mContext.GetBool(boot.SkipPacketBytesCount)
 	return
 }
 
@@ -82,32 +84,34 @@ func (chanenl *SocketChannelWriter) runWriteRoutine(startChan chan int) {
 		if writeEvent != nil {
 			data := writeEvent.data
 			if data != nil {
-				var messageLength = len(data)
-				if chanenl.mLengthInclude {
-					messageLength = messageLength + int(chanenl.mPacketBytesCount)
-				}
-				var lengthData []byte
-				packageLength := chanenl.mPacketBytesCount
-				if packageLength == 4 {
-					if chanenl.mIsLD {
-						lengthData = Int32ToByteLD(int32(messageLength))
-					} else {
-						lengthData = Int32ToByte(int32(messageLength))
+				if !chanenl.mSkipPacketBytesCount {
+					var messageLength = len(data)
+					if chanenl.mLengthInclude {
+						messageLength = messageLength + int(chanenl.mPacketBytesCount)
 					}
-				} else if packageLength == 2 {
-					if chanenl.mIsLD {
-						lengthData = Int16ToByteLD(int16(messageLength))
+					var lengthData []byte
+					packageLength := chanenl.mPacketBytesCount
+					if packageLength == 4 {
+						if chanenl.mIsLD {
+							lengthData = Int32ToByteLD(int32(messageLength))
+						} else {
+							lengthData = Int32ToByte(int32(messageLength))
+						}
+					} else if packageLength == 2 {
+						if chanenl.mIsLD {
+							lengthData = Int16ToByteLD(int16(messageLength))
+						} else {
+							lengthData = Int16ToByte(int16(messageLength))
+						}
 					} else {
-						lengthData = Int16ToByte(int16(messageLength))
+						logger.Debug("SocketChannelWriter WriteRoutine", "chlCtxID=", chanenl.mContext.ID(), "error:", errors.New("非法包长度："+strconv.Itoa(int(packageLength))))
+						break
 					}
-				} else {
-					logger.Debug("SocketChannelWriter WriteRoutine", "chlCtxID=", chanenl.mContext.ID(), "error:", errors.New("非法包长度："+strconv.Itoa(int(packageLength))))
-					break
+					data = append(lengthData, data...)
 				}
-				data = append(lengthData, data...)
 				logger.Debug("SocketChannelWriter messageData:", data)
 				if err := chanenl.doWrite(data); err != nil {
-					logger.Debug("SocketChannelWriter WriteRoutine", "chlCtxID=", chanenl.mContext.ID(), "error:", errors.New("非法包长度："+strconv.Itoa(int(packageLength))))
+					logger.Debug("SocketChannelWriter WriteRoutine", "chlCtxID=", chanenl.mContext.ID(), "error:", err)
 					break
 				}
 			} else if writeEvent.isClose {
