@@ -71,13 +71,27 @@ func (bootStrap *WSServerBootStrap) check() {
 func (bootStrap *WSServerBootStrap) Listen() {
 	bootStrap.check()
 	router := mux.NewRouter()
+	router.Use(func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("X-Powered-By", "Jetty")                                                                                    // 标识服务器端使用的技术或框架
+			w.Header().Set("Content-Type", "application/json")                                                                         // 指示实际发送的数据类型的头部字段
+			w.Header().Set("Access-Control-Allow-Origin", "*")                                                                         // 指定哪些网站可以参与跨源资源共享（CORS，Cross-Origin Resource Sharing）
+			w.Header().Set("Access-Control-Allow-Methods", "GET,PUT,POST,GET,DELETE,OPTIONS")                                          // 指定允许跨域请求的 HTTP 方法
+			w.Header().Set("Access-Control-Allow-Headers", "Origin,X-Requested-With,Content-Type,Content-Length,Accept,Authorization") // 指定了在跨源请求中，浏览器可以携带到服务器端的自定义请求头的列表
+			if r.Method == "OPTIONS" {
+				defer r.Body.Close()
+				w.Header().Set("Access-Control-Allow-Credentials", "true") // 指示是否允许前端请求在跨域请求时携带认证信息（如 Cookies 和 HTTP 认证信息）
+				w.Header().Set("Access-Control-Max-Age", "86400")          // 指定预检请求（preflight request）的结果（即 OPTIONS 请求的响应）可以被缓存多久
+				w.WriteHeader(http.StatusOK)
+				w.Write([]byte("{\"success:\":true}"))
+				return
+			}
+			next.ServeHTTP(w, r)
+		})
+	})
 	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		logger.Info("------------new request")
-		logger.Info("router", "root")
-		defer func() {
-			r.Body.Close()
-		}()
-		w.Write([]byte("OK"))
+		params := mux.Vars(r)
+		bootStrap.routerHandler(params, w, r)
 	})
 	router.HandleFunc("/{upgrade:[A-Za-z0-9\\.]*}", func(w http.ResponseWriter, r *http.Request) {
 		params := mux.Vars(r)
@@ -117,6 +131,7 @@ func (bootStrap *WSServerBootStrap) routerHandler(params map[string]string, w ht
 		logger.Info("WSServerBootStrap Upgrade websocket")
 		conn, err = wsupgrader.NewUpgrader().Upgrade(w, r, params, bootStrap.msgType)
 	} else {
+
 		logger.Info("WSServerBootStrap Upgrade http")
 		conn, err = httpupgrader.NewUpgrader().Upgrade(w, r, params)
 	}

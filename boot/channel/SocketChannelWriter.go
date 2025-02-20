@@ -155,11 +155,11 @@ func (chanenl *SocketChannelWriter) doWrite(data []byte) (err error) {
 			return
 		}
 		if i > 0 {
-			data = data[i:]
 			hasWriteLength = hasWriteLength + i
-		}
-		if hasWriteLength >= goal {
-			return
+			if hasWriteLength >= goal {
+				return
+			}
+			data = data[i:]
 		}
 	}
 }
