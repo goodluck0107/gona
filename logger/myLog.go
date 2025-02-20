@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"runtime"
+	"runtime/debug"
 	"time"
 
 	"gitee.com/andyxt/gona/utils"
@@ -218,6 +219,7 @@ func Warn(v ...interface{}) {
 }
 
 func Error(v ...interface{}) {
+	v = append(v, string(debug.Stack()))
 	if printLevel >= LogLevelError {
 		fmt.Println(v...)
 	}
