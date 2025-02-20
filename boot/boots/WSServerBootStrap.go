@@ -121,7 +121,7 @@ func (bootStrap *WSServerBootStrap) Listen() {
 func (bootStrap *WSServerBootStrap) routerHandler(params map[string]string, w http.ResponseWriter, r *http.Request) {
 	logger.Info(fmt.Sprintf("WSServerBootStrap 收到新的客户端连接请求: %s %s %s %s", r.RemoteAddr, r.Method, r.URL, r.Proto))
 	for k, v := range params {
-		fmt.Println("param:", k, "=", v)
+		logger.Info("WSServerBootStrap param:", k, "=", v)
 	}
 	var (
 		conn net.Conn
@@ -131,7 +131,7 @@ func (bootStrap *WSServerBootStrap) routerHandler(params map[string]string, w ht
 		logger.Info("WSServerBootStrap Upgrade websocket")
 		conn, err = wsupgrader.NewUpgrader().Upgrade(w, r, params, bootStrap.msgType)
 		if err != nil {
-			logger.Error(fmt.Printf("WSServerBootStrap 接受客户端连接异常. URI=%s, Error=%s", r.RequestURI, err.Error()))
+			logger.Error(fmt.Sprintf("WSServerBootStrap 接受客户端连接异常. URI=%s, Error=%s", r.RequestURI, err.Error()))
 			if conn != nil {
 				conn.Close()
 			}
@@ -151,7 +151,7 @@ func (bootStrap *WSServerBootStrap) routerHandler(params map[string]string, w ht
 	logger.Info("WSServerBootStrap Upgrade http")
 	conn, err = httpupgrader.NewUpgrader().Upgrade(w, r, params)
 	if err != nil {
-		logger.Error(fmt.Printf("WSServerBootStrap 接受客户端连接异常. URI=%s, Error=%s", r.RequestURI, err.Error()))
+		logger.Error(fmt.Sprintf("WSServerBootStrap 接受客户端连接异常. URI=%s, Error=%s", r.RequestURI, err.Error()))
 		if conn != nil {
 			conn.Close()
 		}
