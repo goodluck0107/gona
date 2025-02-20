@@ -16,14 +16,15 @@ import (
 type Conn struct {
 	r       *http.Request
 	conn    *websocket.Conn
+	params  map[string]string
 	typ     int // message type
 	reader  io.Reader
 	msgType int
 }
 
 // NewWSConn return an initialized *WSConn
-func NewConn(r *http.Request, conn *websocket.Conn, msgType int) *Conn {
-	return &Conn{r: r, conn: conn, msgType: msgType}
+func NewConn(r *http.Request, conn *websocket.Conn, params map[string]string, msgType int) *Conn {
+	return &Conn{r: r, conn: conn, params: params, msgType: msgType}
 }
 
 // Read reads data from the connection.

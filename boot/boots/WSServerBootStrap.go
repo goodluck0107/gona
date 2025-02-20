@@ -6,16 +6,17 @@ import (
 	"net/http"
 
 	"gitee.com/andyxt/gona/boot"
+	"gitee.com/andyxt/gona/boot/boots/httpupgrader"
 	"gitee.com/andyxt/gona/boot/boots/wsupgrader"
 	"gitee.com/andyxt/gona/boot/channel"
 	"gitee.com/andyxt/gona/logger"
 	"gitee.com/andyxt/gona/utils"
+	"github.com/gorilla/mux"
 )
 
 type WSServerBootStrap struct {
 	ip            string
-	port          string // port for ws
-	sport         string // port for wss
+	port          string // port for ws or wss
 	crt           string // crt for wss
 	key           string // key for wss
 	channelParams map[string]interface{}
@@ -46,11 +47,6 @@ func (bootStrap *WSServerBootStrap) Port(port string) (ret *WSServerBootStrap) {
 	return bootStrap
 }
 
-func (bootStrap *WSServerBootStrap) SPort(port string) (ret *WSServerBootStrap) {
-	bootStrap.sport = port
-	return bootStrap
-}
-
 func (bootStrap *WSServerBootStrap) Crt(crt string) (ret *WSServerBootStrap) {
 	bootStrap.crt = crt
 	return bootStrap
@@ -74,36 +70,68 @@ func (bootStrap *WSServerBootStrap) check() {
 
 func (bootStrap *WSServerBootStrap) Listen() {
 	bootStrap.check()
-	if bootStrap.sport != "" && bootStrap.crt != "" && bootStrap.key != "" {
+	router := mux.NewRouter()
+	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		logger.Info("------------new request")
+		logger.Info("router", "root")
+		defer func() {
+			r.Body.Close()
+		}()
+		w.Write([]byte("OK"))
+	})
+	router.HandleFunc("/{upgrade:[A-Za-z0-9\\.]*}", func(w http.ResponseWriter, r *http.Request) {
+		params := mux.Vars(r)
+		bootStrap.routerHandler(params, w, r)
+	})
+	router.HandleFunc("/{upgrade:[A-Za-z0-9\\.]*}/{route:[A-Za-z0-9\\-]*}", func(w http.ResponseWriter, r *http.Request) {
+		params := mux.Vars(r)
+		bootStrap.routerHandler(params, w, r)
+	})
+	http.Handle("/", router)
+	if bootStrap.crt != "" && bootStrap.key != "" {
 		go func() {
-			logger.StartUp("WSServerBootStrap 开始接受客户端wss连接:", bootStrap.sport)
-			err := http.ListenAndServeTLS(bootStrap.sport, bootStrap.crt, bootStrap.key,
-				bootStrap)
+			logger.StartUp("WSServerBootStrap 开始接受客户端wss连接:", bootStrap.port)
+			err := http.ListenAndServeTLS(bootStrap.port, bootStrap.crt, bootStrap.key,
+				nil)
+			utils.CheckError(err)
+		}()
+	} else {
+		go func() {
+			logger.StartUp("WSServerBootStrap 开始接受客户端ws连接:", bootStrap.port)
+			err := http.ListenAndServe(bootStrap.port, nil)
 			utils.CheckError(err)
 		}()
 	}
-	go func() {
-		logger.StartUp("WSServerBootStrap 开始接受客户端ws连接:", bootStrap.port)
-		// http.Handle("/ws", websocket.Handler(bootStrap.OnWebSocket))
-		err := http.ListenAndServe(bootStrap.port, bootStrap)
-		utils.CheckError(err)
-	}()
 }
 
-func (bootStrap *WSServerBootStrap) ServeHTTP(writer http.ResponseWriter, req *http.Request) {
-	logger.Info(fmt.Sprintf("WSServerBootStrap 收到新的客户端连接请求: %s %s %s %s", req.RemoteAddr, req.Method, req.URL, req.Proto))
-	// 把 HTTP 请求升级转换为 WebSocket 连接, 并写出 状态行 和 响应头。
-	// conn 表示一个 WebSocket 连接, 调用此方法后状态行和响应头已写出, 不能再调用 writer.WriteHeader() 方法。
-	conn, err := wsupgrader.NewUpgrader().Upgrade(writer, req, nil, bootStrap.msgType)
+func (bootStrap *WSServerBootStrap) routerHandler(params map[string]string, w http.ResponseWriter, r *http.Request) {
+	logger.Info(fmt.Sprintf("WSServerBootStrap 收到新的客户端连接请求: %s %s %s %s", r.RemoteAddr, r.Method, r.URL, r.Proto))
+	for k, v := range params {
+		fmt.Println("param:", k, "=", v)
+	}
+	var (
+		conn net.Conn
+		err  error
+	)
+	if upgrade, ok := params["upgrade"]; ok && upgrade == "websocket" {
+		logger.Info("WSServerBootStrap Upgrade websocket")
+		conn, err = wsupgrader.NewUpgrader().Upgrade(w, r, params, bootStrap.msgType)
+	} else {
+		logger.Info("WSServerBootStrap Upgrade http")
+		conn, err = httpupgrader.NewUpgrader().Upgrade(w, r, params)
+	}
 	if err != nil {
-		logger.Error("WSServerBootStrap 接受客户端连接异常:", err.Error())
+		logger.Error(fmt.Printf("WSServerBootStrap 接受客户端连接异常. URI=%s, Error=%s", r.RequestURI, err.Error()))
+		if conn != nil {
+			conn.Close()
+		}
 		return
 	}
 	connParams := make(map[string]interface{})
 	for k, v := range bootStrap.channelParams {
 		connParams[k] = v
 	}
-	connParams[boot.KeyURLPath] = req.URL.Path
+	connParams[boot.KeyURLPath] = r.URL.Path
 	SetWebSocketConnParam(conn)
 	builder := channel.NewSocketChannelBuilder()
 	builder.Params(connParams)
@@ -114,3 +142,21 @@ func (bootStrap *WSServerBootStrap) ServeHTTP(writer http.ResponseWriter, req *h
 func SetWebSocketConnParam(conn net.Conn) {
 
 }
+
+// func (bootStrap *WSServerBootStrap) ServeHTTP(writer http.ResponseWriter, req *http.Request) {
+// 	logger.Info(fmt.Sprintf("WSServerBootStrap 收到新的客户端连接请求: %s %s %s %s", req.RemoteAddr, req.Method, req.URL, req.Proto))
+// 	conn, err := wsupgrader.NewUpgrader().Upgrade(writer, req, nil, bootStrap.msgType)
+// 	if err != nil {
+// 		logger.Error("WSServerBootStrap 接受客户端连接异常:", err.Error())
+// 		return
+// 	}
+// 	connParams := make(map[string]interface{})
+// 	for k, v := range bootStrap.channelParams {
+// 		connParams[k] = v
+// 	}
+// 	connParams[boot.KeyURLPath] = req.URL.Path
+// 	SetWebSocketConnParam(conn)
+// 	builder := channel.NewSocketChannelBuilder()
+// 	builder.Params(connParams)
+// 	builder.Create(conn, bootStrap.initializer)
+// }

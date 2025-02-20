@@ -27,6 +27,5 @@ func (u *Upgrader) Upgrade(w http.ResponseWriter, r *http.Request, params map[st
 	if err != nil {
 		return nil, err
 	}
-
-	return NewConn(r, conn, msgType), nil
+	return NewConn(r, conn, params, msgType), nil
 }
