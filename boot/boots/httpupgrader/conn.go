@@ -126,7 +126,7 @@ func (c *Conn) Write(b []byte) (int, error) {
 	defer func() {
 		c.Close()
 	}()
-	header := fmt.Sprintf("HTTP/1.0 200 OK\r\nContent-Length: %d\r\nContent-Type: text/plain; charset=UTF-8\r\n\r\n", len(b))
+	header := fmt.Sprintf("HTTP/1.0 200 OK\r\nContent-Length: %d\r\nX-Powered-By: Jetty\r\nAccess-Control-Max-Age: 86400\r\nAccess-Control-Allow-Credentials: true\r\nAccess-Control-Allow-Origin: *\r\nAccess-Control-Allow-Methods: GET,PUT,POST,GET,DELETE,OPTIONS\r\nAccess-Control-Allow-Headers: Origin,X-Requested-With,Content-Type,Content-Length,Accept,Authorization\r\nContent-Type: text/plain; charset=UTF-8\r\n\r\n", len(b))
 	nHeader, err := c.brw.Write([]byte(header))
 	if err != nil {
 		return 0, err
