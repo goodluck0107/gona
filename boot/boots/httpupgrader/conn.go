@@ -57,11 +57,9 @@ func (c *Conn) Read(b []byte) (int, error) {
 		var (
 			err     error
 			data    []byte
-			route   string
 			dataMap = make(map[string]interface{})
 		)
 
-		route = c.params["route"]
 		query := c.r.URL.Query()
 		if len(data) == 0 {
 			for k, v := range query {
@@ -101,7 +99,7 @@ func (c *Conn) Read(b []byte) (int, error) {
 			data = bodyData
 		}
 
-		fmt.Printf("http: Type=Request, Route=%s, Len=%d\n", route, len(data))
+		fmt.Printf("http: Type=Request,  Len=%d\n", len(data))
 
 		buf := new(bytes.Buffer)
 		_, err = buf.Write(data)
@@ -125,7 +123,9 @@ func (c *Conn) Read(b []byte) (int, error) {
 // after a fixed time limit; see SetDeadline and SetWriteDeadline.
 func (c *Conn) Write(b []byte) (int, error) {
 	fmt.Printf("http: Type=Response, Len=%d, Data=%+v\n", len(b), string(b))
-
+	defer func() {
+		c.Close()
+	}()
 	header := fmt.Sprintf("HTTP/1.0 200 OK\r\nContent-Length: %d\r\nContent-Type: text/plain; charset=UTF-8\r\n\r\n", len(b))
 	nHeader, err := c.brw.Write([]byte(header))
 	if err != nil {
