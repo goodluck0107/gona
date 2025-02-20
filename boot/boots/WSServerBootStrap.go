@@ -130,11 +130,26 @@ func (bootStrap *WSServerBootStrap) routerHandler(params map[string]string, w ht
 	if upgrade, ok := params["upgrade"]; ok && upgrade == "websocket" {
 		logger.Info("WSServerBootStrap Upgrade websocket")
 		conn, err = wsupgrader.NewUpgrader().Upgrade(w, r, params, bootStrap.msgType)
-	} else {
-
-		logger.Info("WSServerBootStrap Upgrade http")
-		conn, err = httpupgrader.NewUpgrader().Upgrade(w, r, params)
+		if err != nil {
+			logger.Error(fmt.Printf("WSServerBootStrap 接受客户端连接异常. URI=%s, Error=%s", r.RequestURI, err.Error()))
+			if conn != nil {
+				conn.Close()
+			}
+			return
+		}
+		connParams := make(map[string]interface{})
+		for k, v := range bootStrap.channelParams {
+			connParams[k] = v
+		}
+		connParams[boot.KeyURLPath] = r.URL.Path
+		SetWebSocketConnParam(conn)
+		builder := channel.NewSocketChannelBuilder()
+		builder.Params(connParams)
+		builder.Create(conn, bootStrap.initializer)
+		return
 	}
+	logger.Info("WSServerBootStrap Upgrade http")
+	conn, err = httpupgrader.NewUpgrader().Upgrade(w, r, params)
 	if err != nil {
 		logger.Error(fmt.Printf("WSServerBootStrap 接受客户端连接异常. URI=%s, Error=%s", r.RequestURI, err.Error()))
 		if conn != nil {

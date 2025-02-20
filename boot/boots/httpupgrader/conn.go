@@ -11,6 +11,8 @@ import (
 	"strings"
 	"sync/atomic"
 	"time"
+
+	"gitee.com/andyxt/gona/boot"
 )
 
 // Conn is an adapter to t.Conn, which implements all t.Conn
@@ -50,9 +52,9 @@ func (c *Conn) Read(b []byte) (int, error) {
 		} else if time.Now().UnixMilli()-c.startTime.UnixMilli() > 10*1000 {
 			return 0, io.EOF
 		}
-		return 0, nil
+		c.readUntil(1024 * 1024 * 1024)
+		return 0, io.EOF
 	}
-
 	if c.readBuf == nil {
 		var (
 			err     error
@@ -122,7 +124,6 @@ func (c *Conn) Read(b []byte) (int, error) {
 // Write can be made to time out and return an Error with Timeout() == true
 // after a fixed time limit; see SetDeadline and SetWriteDeadline.
 func (c *Conn) Write(b []byte) (int, error) {
-	fmt.Printf("http: Type=Response, Len=%d, Data=%+v\n", len(b), string(b))
 	defer func() {
 		c.Close()
 	}()
@@ -199,6 +200,30 @@ func (c *Conn) SetReadDeadline(t time.Time) error {
 // A zero value for t means Write will not time out.
 func (c *Conn) SetWriteDeadline(t time.Time) error {
 	return c.conn.SetWriteDeadline(t)
+}
+
+func (c *Conn) readUntil(goal int32) (head []byte, err error) {
+	var hasReadLength int32 = 0
+	head = make([]byte, goal)
+	for {
+		var deadTime time.Time = time.Now().Add(time.Duration(boot.ReadTimeOut) * time.Second)
+		timeOutErr := c.conn.SetReadDeadline(deadTime)
+		if timeOutErr != nil {
+			err = timeOutErr
+			return
+		}
+		i, err1 := c.conn.Read(head[hasReadLength:])
+		if err1 != nil {
+			err = err1
+			return
+		}
+		if i > 0 {
+			hasReadLength = hasReadLength + int32(i)
+		}
+		if hasReadLength >= goal {
+			return
+		}
+	}
 }
 
 type httpRemoteAddr struct {
