@@ -2,7 +2,6 @@ package httpupgrader
 
 import (
 	"bufio"
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -23,22 +22,18 @@ type Conn struct {
 	conn      net.Conn
 	brw       *bufio.ReadWriter
 	params    map[string]string
-	readBuf   io.Reader
 	readDone  atomic.Bool
 	writeDone atomic.Bool
-	startTime time.Time
 }
 
 // NewConn return an initialized *WSConn
 func NewConn(w http.ResponseWriter, r *http.Request, conn net.Conn, brw *bufio.ReadWriter, params map[string]string) *Conn {
 	return &Conn{
-		w:         w,
-		r:         r,
-		conn:      conn,
-		brw:       brw,
-		params:    params,
-		readBuf:   nil,
-		startTime: time.Now(),
+		w:      w,
+		r:      r,
+		conn:   conn,
+		brw:    brw,
+		params: params,
 	}
 }
 
@@ -47,77 +42,68 @@ func NewConn(w http.ResponseWriter, r *http.Request, conn net.Conn, brw *bufio.R
 // after a fixed time limit; see SetDeadline and SetReadDeadline.
 func (c *Conn) Read(b []byte) (int, error) {
 	if c.readDone.Load() {
-		if c.writeDone.Load() {
-			return 0, io.EOF
-		} else if time.Now().UnixMilli()-c.startTime.UnixMilli() > 10*1000 {
-			return 0, io.EOF
+		for {
+			_, readE := c.readUntil(16)
+			if readE != nil {
+				return 0, readE
+			}
 		}
-		c.readUntil(1024 * 1024 * 1024)
-		return 0, io.EOF
 	}
-	if c.readBuf == nil {
-		var (
-			err     error
-			data    []byte
-			dataMap = make(map[string]interface{})
-		)
+	defer c.readDone.Store(true)
 
+	contentType := c.r.Header.Get("Content-Type")
+	parts := strings.Split(contentType, ";")
+	if len(parts) == 0 {
+		return 0, fmt.Errorf("invalid Content-Type header: %s", contentType)
+	}
+	contentType = parts[0]
+
+	switch contentType {
+	case "multipart/form-data", "application/x-www-form-urlencoded":
+		dataMap := make(map[string]interface{})
 		query := c.r.URL.Query()
-		if len(data) == 0 {
-			for k, v := range query {
-				dataMap[k] = v[0]
-			}
+		for k, v := range query {
+			dataMap[k] = v[0]
 		}
-
-		contentType := strings.Split(c.r.Header.Get("Content-Type"), ";")[0]
-		switch contentType {
-		case "multipart/form-data", "application/x-www-form-urlencoded":
-			_ = c.r.FormValue("")
-			for k, v := range c.r.Form {
-				dataMap[k] = v[0]
-			}
-			data, err = json.Marshal(dataMap)
-			if err != nil {
-				return 0, err
-			}
-		default:
-			var bodyData []byte
-			if c.r.ContentLength < 0 {
-				return 0, fmt.Errorf("content length is: %d", c.r.ContentLength)
-			}
-
-			bodyData = make([]byte, int(c.r.ContentLength))
-			_, err := io.ReadFull(c.brw, bodyData)
-			if err != nil {
-				return 0, err
-			}
-
-			jsonMap := make(map[string]interface{})
-			if err := json.Unmarshal(bodyData, &jsonMap); err == nil {
-				for k, v := range jsonMap {
-					dataMap[k] = v
-				}
-			}
-			data = bodyData
+		for k, v := range c.r.Form {
+			dataMap[k] = v[0]
 		}
-
-		fmt.Printf("http: Type=Request,  Len=%d\n", len(data))
-
-		buf := new(bytes.Buffer)
-		_, err = buf.Write(data)
+		bodyData, err := json.Marshal(dataMap)
 		if err != nil {
 			return 0, err
 		}
-		c.readBuf = buf
-	}
+		n := copy(b, bodyData)
+		return n, nil
+	default:
+		if c.r.ContentLength < 0 {
+			return 0, fmt.Errorf("content length is: %d", c.r.ContentLength)
+		}
+		if c.r.ContentLength == 0 {
+			dataMap := make(map[string]interface{})
+			query := c.r.URL.Query()
+			for k, v := range query {
+				dataMap[k] = v[0]
+			}
+			bodyData, err := json.Marshal(dataMap)
+			if err != nil {
+				return 0, err
+			}
+			n := copy(b, bodyData)
+			return n, nil
+		}
 
-	n, err := c.readBuf.Read(b)
-	if err == io.EOF {
-		c.readDone.Store(true)
+		if c.r.ContentLength > int64(boot.ChannelReadLimit) { // 防止超大内容长度导致内存溢出
+			return 0, fmt.Errorf("content length too large: %d", c.r.ContentLength)
+		}
+
+		bodyData := make([]byte, int(c.r.ContentLength))
+		_, err := io.ReadFull(c.brw, bodyData)
+		if err != nil {
+			return 0, err
+		}
+		n := copy(b, bodyData)
 		return n, nil
 	}
-
-	return n, err
 }
 
 // Write writes data to the connection.
