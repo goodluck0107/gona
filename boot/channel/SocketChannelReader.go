@@ -12,6 +12,13 @@ import (
 	"gitee.com/andyxt/gona/utils"
 )
 
+const (
+	channelReadLimit int32 = 256 // 256个字节
+	packetBytesCount int32 = 4   // 4个字节
+	readTimeOut      int32 = 30  // 30秒
+	writeTimeOut     int32 = 30  // 30秒
+)
+
 type SocketChannelReader struct {
 	mConn                 net.Conn
 	mContext              Channel
@@ -36,15 +43,15 @@ func NewSocketChannelReader(mConn net.Conn,
 	this.mChannelCallBack = mChannelCallBack
 	this.mChannelReadLimit = this.mContext.GetInt32(boot.KeyChannelReadLimit)
 	if this.mChannelReadLimit <= 0 {
-		this.mChannelReadLimit = boot.ChannelReadLimit
+		this.mChannelReadLimit = channelReadLimit
 	}
 	this.mPacketBytesCount = this.mContext.GetInt32(boot.KeyPacketBytesCount)
 	if this.mPacketBytesCount <= 0 {
-		this.mPacketBytesCount = boot.PacketBytesCount
+		this.mPacketBytesCount = packetBytesCount
 	}
 	this.mReadTimeOut = this.mContext.GetInt32(boot.KeyReadTimeOut)
 	if this.mReadTimeOut == 0 {
-		this.mReadTimeOut = boot.ReadTimeOut
+		this.mReadTimeOut = readTimeOut
 	}
 	this.mIsLD = this.mContext.GetBool(boot.KeyIsLD)
 	this.mLengthInclude = this.mContext.GetBool(boot.KeyLengthInclude)

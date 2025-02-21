@@ -10,8 +10,11 @@ import (
 	"strings"
 	"sync/atomic"
 	"time"
+)
 
-	"gitee.com/andyxt/gona/boot"
+const (
+	channelReadLimit int32 = 256 // 256个字节
+	readTimeOut      int32 = 30  // 30秒
 )
 
 // Conn is an adapter to t.Conn, which implements all t.Conn
@@ -92,7 +95,7 @@ func (c *Conn) Read(b []byte) (int, error) {
 			return n, nil
 		}
 
-		if c.r.ContentLength > int64(boot.ChannelReadLimit) { // 防止超大内容长度导致内存溢出
+		if c.r.ContentLength > int64(channelReadLimit) { // 防止超大内容长度导致内存溢出
 			return 0, fmt.Errorf("content length too large: %d", c.r.ContentLength)
 		}
 
@@ -192,7 +195,7 @@ func (c *Conn) readUntil(goal int32) (head []byte, err error) {
 	var hasReadLength int32 = 0
 	head = make([]byte, goal)
 	for {
-		var deadTime time.Time = time.Now().Add(time.Duration(boot.ReadTimeOut) * time.Second)
+		var deadTime time.Time = time.Now().Add(time.Duration(readTimeOut) * time.Second)
 		timeOutErr := c.conn.SetReadDeadline(deadTime)
 		if timeOutErr != nil {
 			err = timeOutErr

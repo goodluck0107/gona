@@ -12,8 +12,6 @@ import (
 	"gitee.com/andyxt/gona/utils"
 )
 
-var writeTimeOut = time.Duration(10) * time.Second
-
 type SocketChannelWriter struct {
 	mConn                 net.Conn
 	mContext              Channel
@@ -38,11 +36,11 @@ func NewSocketChannelWriter(mConn net.Conn,
 	this.mChannelCallBack = mChannelCallBack
 	this.mPacketBytesCount = this.mContext.GetInt32(boot.KeyPacketBytesCount)
 	if this.mPacketBytesCount <= 0 {
-		this.mPacketBytesCount = boot.PacketBytesCount
+		this.mPacketBytesCount = packetBytesCount
 	}
 	this.mWriteTimeOut = this.mContext.GetInt32(boot.KeyWriteTimeOut)
 	if this.mWriteTimeOut == 0 {
-		this.mWriteTimeOut = boot.WriteTimeOut
+		this.mWriteTimeOut = writeTimeOut
 	}
 	this.mIsLD = this.mContext.GetBool(boot.KeyIsLD)
 	this.mLengthInclude = this.mContext.GetBool(boot.KeyLengthInclude)
