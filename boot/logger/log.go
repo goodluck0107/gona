@@ -2,8 +2,6 @@ package logger
 
 import (
 	"fmt"
-
-	"gitee.com/andyxt/gona/boot"
 )
 
 func StartUp(v ...interface{}) {
@@ -22,11 +20,11 @@ func Error(v ...interface{}) {
 	log.Error(v...)
 }
 
-func Use(l boot.Logger) {
+func Use(l Logger) {
 	log = l
 }
 
-var log boot.Logger = &debugLog{}
+var log Logger = &debugLog{}
 
 type debugLog struct {
 }

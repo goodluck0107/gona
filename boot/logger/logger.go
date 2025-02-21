@@ -1,4 +1,4 @@
-package boot
+package logger
 
 type Logger interface {
 	StartUp(v ...interface{})

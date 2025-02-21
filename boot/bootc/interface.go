@@ -3,7 +3,6 @@ package bootc
 import (
 	"fmt"
 
-	"gitee.com/andyxt/gona/boot"
 	"gitee.com/andyxt/gona/boot/bootc/listener"
 	"gitee.com/andyxt/gona/boot/channel"
 	"gitee.com/andyxt/gona/boot/logger"
@@ -38,7 +37,7 @@ func WithInitializer(initializer channel.ChannelInitializer) Option {
 	}
 }
 
-func WithLogger(l boot.Logger) Option {
+func WithLogger(l logger.Logger) Option {
 	return func(opt *Options) {
 		opt.Logger = l
 	}

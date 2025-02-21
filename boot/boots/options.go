@@ -1,8 +1,8 @@
 package boots
 
 import (
-	"gitee.com/andyxt/gona/boot"
 	"gitee.com/andyxt/gona/boot/channel"
+	"gitee.com/andyxt/gona/boot/logger"
 	"github.com/gorilla/websocket"
 )
 
@@ -15,7 +15,7 @@ type Options struct {
 	Initializer    channel.ChannelInitializer
 	ChannelParams  map[string]interface{}
 	MsgType        int
-	Logger         boot.Logger
+	Logger         logger.Logger
 }
 
 var Default = &Options{
