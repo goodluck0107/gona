@@ -51,6 +51,11 @@ func WithTLSConfig(certificate, key string) Option {
 		opt.TLSKey = key
 	}
 }
+func WithMsgType(msgType int) Option {
+	return func(opt *Options) {
+		opt.MsgType = msgType
+	}
+}
 
 func WithChannelParams(channelParams map[string]interface{}) Option {
 	return func(opt *Options) {
