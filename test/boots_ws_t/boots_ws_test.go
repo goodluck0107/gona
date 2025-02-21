@@ -21,11 +21,15 @@ func testServer() {
 	params["key"] = "serverValue"
 	params[boot.KeyPacketBytesCount] = 2
 	params[boot.KeyChannelReadLimit] = 512
-	params[boot.KeyReadTimeOut] = 30
-	params[boot.KeyWriteTimeOut] = 30
 	params[boot.SkipPacketBytesCount] = true
-	boots.Serve(boots.WithHttpAddr(":20000"), boots.WithChannelParams(params),
-		boots.WithInitializer(NewTestChannelInitializer()), boots.WithLogger(logger.GetLogger()))
+	boots.Serve(
+		boots.WithHttpAddr(":20000"),
+		boots.WithChannelParams(params),
+		boots.WithInitializer(NewTestChannelInitializer()),
+		boots.WithLogger(logger.GetLogger()),
+		boots.WithReadTimeOut(30),
+		boots.WithWriteTimeOut(30),
+	)
 	for {
 		fmt.Println("当前协程数：", runtime.NumGoroutine())
 		time.Sleep(time.Second * 1)

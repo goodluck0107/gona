@@ -113,13 +113,9 @@ func (bootStrap *bootStrap) routerHandler(params map[string]string, w http.Respo
 	for k, v := range params {
 		logger.Info("http连接请求param:", k, "=", v)
 	}
-	var (
-		conn net.Conn
-		err  error
-	)
 	if upgrade, ok := params["upgrade"]; ok && upgrade == "websocket" {
 		logger.Info("http连接请求Upgrade websocket")
-		conn, err = wsupgrader.NewUpgrader().Upgrade(w, r, params, bootStrap.MsgType)
+		conn, err := wsupgrader.NewUpgrader().Upgrade(w, r, params, bootStrap.MsgType)
 		if err != nil {
 			logger.Error(fmt.Sprintf("http连接请求Upgrade websocket异常. URI=%s, Error=%s", r.RequestURI, err.Error()))
 			if conn != nil {
@@ -139,7 +135,7 @@ func (bootStrap *bootStrap) routerHandler(params map[string]string, w http.Respo
 		return
 	}
 	logger.Info("http连接请求Upgrade http")
-	conn, err = httpupgrader.NewUpgrader().Upgrade(w, r, params)
+	conn, err := httpupgrader.NewUpgrader().Upgrade(w, r, params)
 	if err != nil {
 		logger.Error(fmt.Sprintf("http连接请求Upgrade http异常. URI=%s, Error=%s", r.RequestURI, err.Error()))
 		if conn != nil {

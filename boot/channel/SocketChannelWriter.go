@@ -38,7 +38,7 @@ func NewSocketChannelWriter(mConn net.Conn,
 	if this.mPacketBytesCount <= 0 {
 		this.mPacketBytesCount = packetBytesCount
 	}
-	this.mWriteTimeOut = this.mContext.GetInt32(boot.KeyWriteTimeOut)
+	this.mWriteTimeOut = this.mContext.GetInt32(KeyWriteTimeOut)
 	if this.mWriteTimeOut == 0 {
 		this.mWriteTimeOut = writeTimeOut
 	}

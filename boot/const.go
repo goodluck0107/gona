@@ -1,9 +1,6 @@
 package boot
 
 const (
-	KeyReadTimeOut  string = "KeyReadTimeOut"  // 连接读取消息超时时间
-	KeyWriteTimeOut string = "KeyWriteTimeOut" // 连接写入消息超时时间
-
 	KeyChannelReadLimit  string = "KeyChannelReadLimit"  // 连接读取消息长度限制
 	KeyPacketBytesCount  string = "KeyPacketBytesCount"  // 消息长度占用字节数
 	KeyIsLD              string = "KeyIsLD"              // 是否小端

@@ -14,8 +14,6 @@ func TestConnect(t *testing.T) {
 	params["key"] = "clientValue"
 	params[boot.KeyPacketBytesCount] = 2
 	params[boot.KeyChannelReadLimit] = 10240
-	params[boot.KeyReadTimeOut] = -1
-	params[boot.KeyWriteTimeOut] = -1
 	Connect(NormalSocket, "127.0.0.1", 10086, 3, newConnectSuccess(params), newConnectFail(params, func(err error, params map[string]interface{}) {
 		fmt.Println(params, "connectFail", err)
 	}))

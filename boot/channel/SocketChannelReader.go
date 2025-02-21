@@ -13,6 +13,9 @@ import (
 )
 
 const (
+	KeyReadTimeOut  string = "KeyReadTimeOut"  // 连接读取消息超时时间
+	KeyWriteTimeOut string = "KeyWriteTimeOut" // 连接写入消息超时时间
+
 	channelReadLimit int32 = 256 // 256个字节
 	packetBytesCount int32 = 4   // 4个字节
 	readTimeOut      int32 = 30  // 30秒
@@ -49,7 +52,7 @@ func NewSocketChannelReader(mConn net.Conn,
 	if this.mPacketBytesCount <= 0 {
 		this.mPacketBytesCount = packetBytesCount
 	}
-	this.mReadTimeOut = this.mContext.GetInt32(boot.KeyReadTimeOut)
+	this.mReadTimeOut = this.mContext.GetInt32(KeyReadTimeOut)
 	if this.mReadTimeOut == 0 {
 		this.mReadTimeOut = readTimeOut
 	}

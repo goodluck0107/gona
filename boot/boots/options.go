@@ -13,9 +13,12 @@ type Options struct {
 	TLSCertificate string // crt for tls
 	TLSKey         string // key for tls
 	Initializer    channel.ChannelInitializer
-	ChannelParams  map[string]interface{}
 	MsgType        int
 	Logger         logger.Logger
+
+	ChannelParams map[string]interface{}
+	ReadTimeOut   int32 // 连接读取消息超时时间
+	WriteTimeOut  int32 // 连接写入消息超时时间
 }
 
 var Default = &Options{
