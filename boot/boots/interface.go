@@ -88,6 +88,13 @@ func WithWriteTimeOut(writeTimeOut int32) Option {
 	}
 }
 
+// 使用小端字节序
+func WithByteOrderLittleEndian() Option {
+	return func(opt *Options) {
+		opt.ByteOrder = byteOrderLittleEndian
+	}
+}
+
 type Option func(*Options)
 
 func check(opts *Options) error {
@@ -102,6 +109,9 @@ func check(opts *Options) error {
 	}
 	if opts.WriteTimeOut != 0 {
 		opts.ChannelParams[channel.KeyWriteTimeOut] = opts.WriteTimeOut
+	}
+	if opts.ByteOrder == byteOrderLittleEndian {
+		opts.ChannelParams[channel.KeyIsLD] = true
 	}
 	return nil
 }

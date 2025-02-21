@@ -6,6 +6,13 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+type ByteOrder int8
+
+const (
+	byteOrderBigEndian    ByteOrder = 0 // 大端字节序
+	byteOrderLittleEndian ByteOrder = 1 // 小端字节序
+)
+
 // Options contains some configurations for current node
 type Options struct {
 	TCPAddr        string
@@ -17,22 +24,18 @@ type Options struct {
 	Logger         logger.Logger
 
 	ChannelParams map[string]interface{}
-	ReadTimeOut   int32 // 连接读取消息超时时间
-	WriteTimeOut  int32 // 连接写入消息超时时间
+	ReadTimeOut   int32     // 连接读取消息超时时间
+	WriteTimeOut  int32     // 连接写入消息超时时间
+	ByteOrder     ByteOrder // 字节序
 }
 
 var Default = &Options{
-	TCPAddr:        "",
-	HttpAddr:       "",
-	TLSCertificate: "",
-	TLSKey:         "",
-	ChannelParams:  make(map[string]interface{}),
-	Initializer:    nil,
-	MsgType:        DefaultMsgType,
+	ChannelParams: make(map[string]interface{}),
+	MsgType:       websocket.BinaryMessage,
+	ByteOrder:     byteOrderBigEndian,
 }
 
 const (
 	DefaultTCPAddr    string = "localhost:6829"
 	DefaultClientPort        = 6829
-	DefaultMsgType           = websocket.BinaryMessage
 )
