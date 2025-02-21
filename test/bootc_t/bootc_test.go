@@ -20,13 +20,8 @@ func TestClient(t *testing.T) {
 var connConnector listener.IConnector
 
 func testClient() {
-	bc :=
-		bootc.NewClientBootStrap()
-	connConnector = bc.GetConnector()
-	bc.
-		ChannelInitializer(
-			NewTestChannelInitializer())
-	bc.Listen()
+	connConnector :=
+		bootc.Serv(bootc.WithInitializer(NewTestChannelInitializer()))
 	fmt.Println("Connect")
 	IP := "127.0.0.1" // 连接IP
 	Port := 20000     // 连接端口

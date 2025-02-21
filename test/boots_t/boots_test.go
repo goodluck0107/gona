@@ -22,13 +22,8 @@ func testServer() {
 	params[boot.KeyChannelReadLimit] = 512
 	params[boot.KeyReadTimeOut] = 30
 	params[boot.KeyWriteTimeOut] = 30
-	bs :=
-		boots.NewServerBootStrap().
-			Params(params).
-			Port(":20000").
-			ChannelInitializer(
-				NewTestChannelInitializer())
-	go bs.Listen()
+	boots.Serve(boots.WithTCPAddr(":20000"), boots.WithChannelParams(params),
+		boots.WithInitializer(NewTestChannelInitializer()))
 	for {
 		fmt.Println("当前协程数：", runtime.NumGoroutine())
 		time.Sleep(time.Second * 1)
