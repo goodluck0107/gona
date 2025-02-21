@@ -13,14 +13,12 @@ import (
 )
 
 const (
-	KeyReadTimeOut  string = "KeyReadTimeOut"  // 连接读取消息超时时间
-	KeyWriteTimeOut string = "KeyWriteTimeOut" // 连接写入消息超时时间
-	KeyIsLD         string = "KeyIsLD"         // 是否小端
+	KeyReadTimeOut      string = "KeyReadTimeOut"      // 连接读取消息超时时间
+	KeyWriteTimeOut     string = "KeyWriteTimeOut"     // 连接写入消息超时时间
+	KeyIsLD             string = "KeyIsLD"             // 是否小端
+	KeyChannelReadLimit string = "KeyChannelReadLimit" // 连接读取消息长度限制
 
-	channelReadLimit int32 = 256 // 256个字节
-	packetBytesCount int32 = 4   // 4个字节
-	readTimeOut      int32 = 30  // 30秒
-	writeTimeOut     int32 = 30  // 30秒
+	packetBytesCount int32 = 4 // 4个字节
 )
 
 type SocketChannelReader struct {
@@ -45,18 +43,12 @@ func NewSocketChannelReader(mConn net.Conn,
 	this.mContext = mContext
 	this.mChannelError = mChannelError
 	this.mChannelCallBack = mChannelCallBack
-	this.mChannelReadLimit = this.mContext.GetInt32(boot.KeyChannelReadLimit)
-	if this.mChannelReadLimit <= 0 {
-		this.mChannelReadLimit = channelReadLimit
-	}
+	this.mChannelReadLimit = this.mContext.GetInt32(KeyChannelReadLimit)
 	this.mPacketBytesCount = this.mContext.GetInt32(boot.KeyPacketBytesCount)
 	if this.mPacketBytesCount <= 0 {
 		this.mPacketBytesCount = packetBytesCount
 	}
 	this.mReadTimeOut = this.mContext.GetInt32(KeyReadTimeOut)
-	if this.mReadTimeOut == 0 {
-		this.mReadTimeOut = readTimeOut
-	}
 	this.mIsLD = this.mContext.GetBool(KeyIsLD)
 	this.mLengthInclude = this.mContext.GetBool(boot.KeyLengthInclude)
 	this.mSkipPacketBytesCount = this.mContext.GetBool(boot.SkipPacketBytesCount)

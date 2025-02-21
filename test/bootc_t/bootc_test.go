@@ -29,7 +29,6 @@ func testClient() {
 	params := make(map[string]interface{})
 	params["key"] = "clientValue"
 	params[boot.KeyPacketBytesCount] = 2
-	params[boot.KeyChannelReadLimit] = 10240
 	params[boot.KeyConnType] = connector.NormalSocket
 	params[boot.KeyIP] = IP
 	params[boot.KeyPort] = Port

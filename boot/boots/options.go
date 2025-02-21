@@ -27,15 +27,14 @@ type Options struct {
 	ReadTimeOut   int32     // 连接读取消息超时时间
 	WriteTimeOut  int32     // 连接写入消息超时时间
 	ByteOrder     ByteOrder // 字节序
+	ReadLimit     int32     // 连接读取消息长度限制
 }
 
 var Default = &Options{
 	ChannelParams: make(map[string]interface{}),
 	MsgType:       websocket.BinaryMessage,
 	ByteOrder:     byteOrderBigEndian,
+	ReadTimeOut:   30,  // 30秒
+	WriteTimeOut:  30,  // 30秒
+	ReadLimit:     256, // 256个字节
 }
-
-const (
-	DefaultTCPAddr    string = "localhost:6829"
-	DefaultClientPort        = 6829
-)

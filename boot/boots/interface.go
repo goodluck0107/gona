@@ -95,6 +95,13 @@ func WithByteOrderLittleEndian() Option {
 	}
 }
 
+// 连接读取消息长度限制
+func WithReadLimit(readLimit int32) Option {
+	return func(opt *Options) {
+		opt.ReadLimit = readLimit
+	}
+}
+
 type Option func(*Options)
 
 func check(opts *Options) error {
@@ -112,6 +119,9 @@ func check(opts *Options) error {
 	}
 	if opts.ByteOrder == byteOrderLittleEndian {
 		opts.ChannelParams[channel.KeyIsLD] = true
+	}
+	if opts.ReadLimit > 0 {
+		opts.ChannelParams[channel.KeyChannelReadLimit] = opts.ReadLimit
 	}
 	return nil
 }

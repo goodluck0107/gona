@@ -39,9 +39,6 @@ func NewSocketChannelWriter(mConn net.Conn,
 		this.mPacketBytesCount = packetBytesCount
 	}
 	this.mWriteTimeOut = this.mContext.GetInt32(KeyWriteTimeOut)
-	if this.mWriteTimeOut == 0 {
-		this.mWriteTimeOut = writeTimeOut
-	}
 	this.mIsLD = this.mContext.GetBool(KeyIsLD)
 	this.mLengthInclude = this.mContext.GetBool(boot.KeyLengthInclude)
 	this.writeMsgChan = make(chan *WriteEvent, ChannelChanSize)

@@ -20,7 +20,6 @@ func testServer() {
 	params := make(map[string]interface{})
 	params["key"] = "serverValue"
 	params[boot.KeyPacketBytesCount] = 2
-	params[boot.KeyChannelReadLimit] = 512
 	boots.Serve(
 		boots.WithTCPAddr(":20000"),
 		boots.WithChannelParams(params),
@@ -28,6 +27,7 @@ func testServer() {
 		boots.WithLogger(logger.GetLogger()),
 		boots.WithReadTimeOut(30),
 		boots.WithWriteTimeOut(30),
+		boots.WithReadLimit(512),
 	)
 	for {
 		fmt.Println("当前协程数：", runtime.NumGoroutine())
