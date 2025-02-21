@@ -1,6 +1,12 @@
 package logger
 
-import "fmt"
+import (
+	"fmt"
+)
+
+func GetLogger() *logw {
+	return &logw{}
+}
 
 func StartUp(v ...interface{}) {
 	if printLevel >= LogLevelDebug {

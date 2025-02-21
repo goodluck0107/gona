@@ -22,7 +22,7 @@ var connConnector listener.IConnector
 
 func testClient() {
 	connConnector :=
-		bootc.Serv(bootc.WithInitializer(NewTestChannelInitializer()), bootc.WithLogger(&log{}))
+		bootc.Serv(bootc.WithInitializer(NewTestChannelInitializer()), bootc.WithLogger(logger.GetLogger()))
 	fmt.Println("Connect")
 	IP := "127.0.0.1" // 连接IP
 	Port := 20000     // 连接端口
@@ -48,25 +48,6 @@ func failFunc(err error, params map[string]interface{}) {
 	ip := params[boot.KeyIP].(string)
 	port := params[boot.KeyPort].(int)
 	connConnector.Connect(connType, ip, port, params, failFunc)
-}
-
-type log struct {
-}
-
-func (l *log) StartUp(v ...interface{}) {
-	logger.StartUp(v...)
-}
-func (l *log) Info(v ...interface{}) {
-	logger.Info(v...)
-}
-func (l *log) Debug(v ...interface{}) {
-	logger.Debug(v...)
-}
-func (l *log) Warn(v ...interface{}) {
-	logger.Warn(v...)
-}
-func (l *log) Error(v ...interface{}) {
-	logger.Error(v...)
 }
 
 type TestChannelInitializer struct {
