@@ -3,14 +3,19 @@ package bootc
 import (
 	"fmt"
 
+	"gitee.com/andyxt/gona/boot"
 	"gitee.com/andyxt/gona/boot/bootc/listener"
 	"gitee.com/andyxt/gona/boot/channel"
+	"gitee.com/andyxt/gona/boot/logger"
 )
 
 func Serv(opts ...Option) listener.IConnector {
 	opt := Default
 	for _, option := range opts {
 		option(opt)
+	}
+	if opt.Logger != nil {
+		logger.Use(opt.Logger)
 	}
 	checkE := check(opt)
 	if checkE != nil {
@@ -30,6 +35,12 @@ func Serv(opts ...Option) listener.IConnector {
 func WithInitializer(initializer channel.ChannelInitializer) Option {
 	return func(opt *Options) {
 		opt.Initializer = initializer
+	}
+}
+
+func WithLogger(l boot.Logger) Option {
+	return func(opt *Options) {
+		opt.Logger = l
 	}
 }
 

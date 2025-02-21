@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"gitee.com/andyxt/gona/logger"
+	"gitee.com/andyxt/gona/boot/logger"
 )
 
 type connectEvent struct {

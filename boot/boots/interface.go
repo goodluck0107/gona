@@ -3,13 +3,18 @@ package boots
 import (
 	"fmt"
 
+	"gitee.com/andyxt/gona/boot"
 	"gitee.com/andyxt/gona/boot/channel"
+	"gitee.com/andyxt/gona/boot/logger"
 )
 
 func Serve(opts ...Option) {
 	opt := Default
 	for _, option := range opts {
 		option(opt)
+	}
+	if opt.Logger != nil {
+		logger.Use(opt.Logger)
 	}
 	checkE := check(opt)
 	if checkE != nil {
@@ -57,6 +62,11 @@ func WithChannelParams(channelParams map[string]interface{}) Option {
 func WithInitializer(initializer channel.ChannelInitializer) Option {
 	return func(opt *Options) {
 		opt.Initializer = initializer
+	}
+}
+func WithLogger(l boot.Logger) Option {
+	return func(opt *Options) {
+		opt.Logger = l
 	}
 }
 

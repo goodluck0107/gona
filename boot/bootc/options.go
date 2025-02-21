@@ -1,6 +1,7 @@
 package bootc
 
 import (
+	"gitee.com/andyxt/gona/boot"
 	"gitee.com/andyxt/gona/boot/channel"
 )
 
@@ -8,6 +9,7 @@ import (
 type Options struct {
 	Initializer   channel.ChannelInitializer
 	ChannelParams map[string]interface{}
+	Logger        boot.Logger
 }
 
 var Default = &Options{

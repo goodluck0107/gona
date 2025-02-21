@@ -5,7 +5,7 @@ import (
 	"net"
 	"sync"
 
-	"gitee.com/andyxt/gona/logger"
+	"gitee.com/andyxt/gona/boot/logger"
 	"gitee.com/andyxt/gona/utils"
 )
 

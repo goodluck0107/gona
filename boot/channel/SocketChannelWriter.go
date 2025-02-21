@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"gitee.com/andyxt/gona/boot"
-	"gitee.com/andyxt/gona/logger"
+	"gitee.com/andyxt/gona/boot/logger"
 	"gitee.com/andyxt/gona/utils"
 )
 
