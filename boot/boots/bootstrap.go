@@ -85,7 +85,11 @@ func (bootStrap *bootStrap) listenAndServeHttp() {
 		params := mux.Vars(r)
 		bootStrap.routerHandler(params, w, r)
 	})
-	router.HandleFunc("/{upgrade:[A-Za-z0-9\\.]*}/{route:[A-Za-z0-9\\-]*}", func(w http.ResponseWriter, r *http.Request) {
+	// router.HandleFunc("/{upgrade:[A-Za-z0-9\\.]*}/{route:[A-Za-z0-9\\-]*}", func(w http.ResponseWriter, r *http.Request) {
+	// 	params := mux.Vars(r)
+	// 	bootStrap.routerHandler(params, w, r)
+	// })
+	router.HandleFunc("/{upgrade:[A-Za-z0-9\\.]*}/{route:.*}", func(w http.ResponseWriter, r *http.Request) {
 		params := mux.Vars(r)
 		bootStrap.routerHandler(params, w, r)
 	})

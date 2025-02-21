@@ -19,7 +19,8 @@ type Options struct {
 }
 
 var Default = &Options{
-	TCPAddr:        DefaultTCPAddr,
+	TCPAddr:        "",
+	HttpAddr:       "",
 	TLSCertificate: "",
 	TLSKey:         "",
 	ChannelParams:  make(map[string]interface{}),
