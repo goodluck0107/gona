@@ -5,10 +5,11 @@ import (
 
 	"gitee.com/andyxt/gona/boot/channel"
 	"gitee.com/andyxt/gona/boot/logger"
+	"github.com/mohae/deepcopy"
 )
 
 func Serve(opts ...Option) {
-	opt := Default
+	opt := deepcopy.Copy(Default).(*Options)
 	for _, option := range opts {
 		option(opt)
 	}
