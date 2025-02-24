@@ -6,10 +6,14 @@ import (
 	"gitee.com/andyxt/gona/boot/bootc/listener"
 	"gitee.com/andyxt/gona/boot/channel"
 	"gitee.com/andyxt/gona/boot/logger"
+	"github.com/mohae/deepcopy"
 )
 
 func Serv(opts ...Option) listener.IConnector {
-	opt := Default
+	opt := deepcopy.Copy(Default).(*Options)
+	for _, option := range opts {
+		option(opt)
+	}
 	for _, option := range opts {
 		option(opt)
 	}
