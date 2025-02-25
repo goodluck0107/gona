@@ -69,12 +69,6 @@ func WithLogger(l logger.Logger) Option {
 	}
 }
 
-func WithChannelParams1(channelParams map[string]interface{}) Option {
-	return func(opt *Options) {
-		opt.ChannelParams = channelParams
-	}
-}
-
 // 连接读取消息超时时间
 func WithReadTimeOut(readTimeOut int32) Option {
 	return func(opt *Options) {
@@ -130,29 +124,29 @@ func check(opts *Options) error {
 	if opts.Initializer == nil {
 		return fmt.Errorf("channel initializer is nil")
 	}
-	if opts.ChannelParams == nil {
-		opts.ChannelParams = make(map[string]interface{})
+	if opts.channelParams == nil {
+		opts.channelParams = make(map[string]interface{})
 	}
 	if opts.ReadTimeOut != 0 {
-		opts.ChannelParams[channel.KeyReadTimeOut] = opts.ReadTimeOut
+		opts.channelParams[channel.KeyReadTimeOut] = opts.ReadTimeOut
 	}
 	if opts.WriteTimeOut != 0 {
-		opts.ChannelParams[channel.KeyWriteTimeOut] = opts.WriteTimeOut
+		opts.channelParams[channel.KeyWriteTimeOut] = opts.WriteTimeOut
 	}
 	if opts.ByteOrder == byteOrderLittleEndian {
-		opts.ChannelParams[channel.KeyIsLD] = true
+		opts.channelParams[channel.KeyIsLD] = true
 	}
 	if opts.ReadLimit > 0 {
-		opts.ChannelParams[channel.KeyChannelReadLimit] = opts.ReadLimit
+		opts.channelParams[channel.KeyChannelReadLimit] = opts.ReadLimit
 	}
 	if opts.PacketBytesCount > 0 {
-		opts.ChannelParams[channel.KeyPacketBytesCount] = opts.PacketBytesCount
+		opts.channelParams[channel.KeyPacketBytesCount] = opts.PacketBytesCount
 	}
 	if opts.LengthInclude {
-		opts.ChannelParams[channel.KeyLengthInclude] = true
+		opts.channelParams[channel.KeyLengthInclude] = true
 	}
 	if opts.SkipPacketBytesCount {
-		opts.ChannelParams[channel.KeySkipPacketBytesCount] = true
+		opts.channelParams[channel.KeySkipPacketBytesCount] = true
 	}
 	return nil
 }

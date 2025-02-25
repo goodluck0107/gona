@@ -23,7 +23,6 @@ type Options struct {
 	MsgType        int
 	Logger         logger.Logger
 
-	ChannelParams        map[string]interface{}
 	ReadTimeOut          int32     // 连接读取消息超时时间
 	WriteTimeOut         int32     // 连接写入消息超时时间
 	ByteOrder            ByteOrder // 字节序
@@ -31,10 +30,10 @@ type Options struct {
 	PacketBytesCount     int32     // 消息长度占用字节数
 	LengthInclude        bool      // 包长度是否包含自己的长度
 	SkipPacketBytesCount bool      // 跳过包长度
+	channelParams        map[string]interface{}
 }
 
 var Default = &Options{
-	ChannelParams:        make(map[string]interface{}),
 	MsgType:              websocket.BinaryMessage,
 	ByteOrder:            byteOrderBigEndian,
 	ReadTimeOut:          30,    // 30秒
@@ -43,4 +42,5 @@ var Default = &Options{
 	PacketBytesCount:     4,     // 4个字节
 	LengthInclude:        false, // 包长度不包含自己的字节数
 	SkipPacketBytesCount: false, // 不跳过包长度
+	channelParams:        make(map[string]interface{}),
 }
