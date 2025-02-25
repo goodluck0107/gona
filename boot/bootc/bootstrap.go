@@ -22,6 +22,11 @@ func (cbs *ClientBootStrap) startup() error {
 				continue
 			}
 			logger.Info("收到新的服务端连接请求")
+			connParams := make(map[string]interface{})
+			for k, v := range cbs.ChannelParams {
+				connParams[k] = v
+			}
+
 			builder := channel.NewSocketChannelBuilder()
 			builder.Params(conn.GetParams())
 			builder.Create(conn.GetConn(), cbs.Initializer)
