@@ -50,9 +50,13 @@ func (bootStrap *bootStrap) listenAndServeTCP() {
 			continue
 		}
 		logger.Info("收到新的客户端tcp连接请求:", conn.RemoteAddr())
+		connParams := make(map[string]interface{})
+		for k, v := range bootStrap.channelParams {
+			connParams[k] = v
+		}
 		SetConnParam(conn)
 		builder := channel.NewSocketChannelBuilder()
-		builder.Params(bootStrap.channelParams)
+		builder.Params(connParams)
 		builder.Create(conn, bootStrap.Initializer)
 	}
 }

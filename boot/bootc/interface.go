@@ -50,9 +50,6 @@ func WithLogger(l logger.Logger) Option {
 type Option func(*Options)
 
 func check(opts *Options) error {
-	if opts.ChannelParams == nil {
-		opts.ChannelParams = make(map[string]interface{})
-	}
 	if opts.Initializer == nil {
 		return fmt.Errorf("channel initializer is nil")
 	}
