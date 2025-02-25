@@ -69,7 +69,7 @@ func WithLogger(l logger.Logger) Option {
 	}
 }
 
-func WithChannelParams(channelParams map[string]interface{}) Option {
+func WithChannelParams1(channelParams map[string]interface{}) Option {
 	return func(opt *Options) {
 		opt.ChannelParams = channelParams
 	}

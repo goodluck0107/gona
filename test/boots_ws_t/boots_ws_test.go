@@ -16,11 +16,8 @@ func TestClient(t *testing.T) {
 }
 
 func testServer() {
-	params := make(map[string]interface{})
-	params["key"] = "serverValue"
 	boots.Serve(
 		boots.WithHttpAddr(":20000"),
-		boots.WithChannelParams(params),
 		boots.WithInitializer(NewTestChannelInitializer()),
 		boots.WithLogger(logger.GetLogger()),
 		boots.WithReadTimeOut(30),
