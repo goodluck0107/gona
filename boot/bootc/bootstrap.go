@@ -6,13 +6,13 @@ import (
 	"gitee.com/andyxt/gona/boot/logger"
 )
 
-type ClientBootStrap struct {
+type bootStrap struct {
 	*Options
 	acceptor  listener.IConnAcceptor
 	connector listener.IConnector
 }
 
-func (cbs *ClientBootStrap) startup() error {
+func (cbs *bootStrap) startup() error {
 	go func() {
 		logger.Info("开始接受服务端连接:")
 		for {
@@ -22,8 +22,15 @@ func (cbs *ClientBootStrap) startup() error {
 				continue
 			}
 			logger.Info("收到新的服务端连接请求")
+			connParams := make(map[string]interface{})
+			for k, v := range cbs.channelParams {
+				connParams[k] = v
+			}
+			for k, v := range conn.GetParams() {
+				connParams[k] = v
+			}
 			builder := channel.NewSocketChannelBuilder()
-			builder.Params(conn.GetParams())
+			builder.Params(connParams)
 			builder.Create(conn.GetConn(), cbs.Initializer)
 		}
 	}()

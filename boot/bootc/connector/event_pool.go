@@ -15,16 +15,16 @@ type Event interface {
 	Exec()
 }
 
-var routinePool *RoutinePool = NewRoutinePool(4, 8)
+var eventPool *routinePool = newRoutinePool(4, 8)
 
-type RoutinePool struct {
+type routinePool struct {
 	poolSize int64
 	chanSize int64
 	routines map[int64]*routine
 }
 
-func NewRoutinePool(PoolSize int64, ChanSize int64) (pool *RoutinePool) {
-	pool = new(RoutinePool)
+func newRoutinePool(PoolSize int64, ChanSize int64) (pool *routinePool) {
+	pool = new(routinePool)
 	pool.poolSize = PoolSize
 	pool.chanSize = ChanSize
 	pool.routines = make(map[int64]*routine)
@@ -38,13 +38,13 @@ func NewRoutinePool(PoolSize int64, ChanSize int64) (pool *RoutinePool) {
 	}
 	return
 }
-func (pool *RoutinePool) ShutDown() {
+func (pool *routinePool) ShutDown() {
 	for _, value := range pool.routines {
 		value.Close()
 	}
 }
 
-func (pool *RoutinePool) FireEvent(e Event) {
+func (pool *routinePool) FireEvent(e Event) {
 	routineId := e.QueueId() % pool.poolSize
 	if routine, ok := pool.routines[routineId]; ok {
 		routine.Put(e)

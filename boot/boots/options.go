@@ -19,13 +19,14 @@ type Options struct {
 	HttpAddr       string
 	TLSCertificate string // crt for tls
 	TLSKey         string // key for tls
-	Initializer    channel.ChannelInitializer
-	MsgType        int
-	Logger         logger.Logger
 
+	Initializer channel.ChannelInitializer
+	Logger      logger.Logger
+
+	MsgType              int
+	ByteOrder            ByteOrder // 字节序
 	ReadTimeOut          int32     // 连接读取消息超时时间
 	WriteTimeOut         int32     // 连接写入消息超时时间
-	ByteOrder            ByteOrder // 字节序
 	ReadLimit            int32     // 连接读取消息长度限制
 	PacketBytesCount     int32     // 消息长度占用字节数
 	LengthInclude        bool      // 包长度是否包含自己的长度

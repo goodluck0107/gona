@@ -52,11 +52,6 @@ func WithTLSConfig(certificate, key string) Option {
 		opt.TLSKey = key
 	}
 }
-func WithMsgType(msgType int) Option {
-	return func(opt *Options) {
-		opt.MsgType = msgType
-	}
-}
 
 func WithInitializer(initializer channel.ChannelInitializer) Option {
 	return func(opt *Options) {
@@ -66,6 +61,12 @@ func WithInitializer(initializer channel.ChannelInitializer) Option {
 func WithLogger(l logger.Logger) Option {
 	return func(opt *Options) {
 		opt.Logger = l
+	}
+}
+
+func WithMsgType(msgType int) Option {
+	return func(opt *Options) {
+		opt.MsgType = msgType
 	}
 }
 
