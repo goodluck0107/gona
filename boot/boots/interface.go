@@ -103,6 +103,27 @@ func WithReadLimit(readLimit int32) Option {
 	}
 }
 
+// 消息长度占用字节数
+func WithPacketBytesCount(packetBytesCount int32) Option {
+	return func(opt *Options) {
+		opt.PacketBytesCount = packetBytesCount
+	}
+}
+
+// 包长度是否包含自己的长度
+func WithKeyLengthInclude() Option {
+	return func(opt *Options) {
+		opt.LengthInclude = true
+	}
+}
+
+// 跳过包长度
+func WithSkipPacketBytesCount() Option {
+	return func(opt *Options) {
+		opt.SkipPacketBytesCount = true
+	}
+}
+
 type Option func(*Options)
 
 func check(opts *Options) error {
@@ -123,6 +144,15 @@ func check(opts *Options) error {
 	}
 	if opts.ReadLimit > 0 {
 		opts.ChannelParams[channel.KeyChannelReadLimit] = opts.ReadLimit
+	}
+	if opts.PacketBytesCount > 0 {
+		opts.ChannelParams[channel.KeyPacketBytesCount] = opts.PacketBytesCount
+	}
+	if opts.LengthInclude {
+		opts.ChannelParams[channel.KeyLengthInclude] = true
+	}
+	if opts.SkipPacketBytesCount {
+		opts.ChannelParams[channel.KeySkipPacketBytesCount] = true
 	}
 	return nil
 }

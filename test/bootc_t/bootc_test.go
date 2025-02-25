@@ -28,7 +28,7 @@ func testClient() {
 	Port := 20000     // 连接端口
 	params := make(map[string]interface{})
 	params["key"] = "clientValue"
-	params[boot.KeyPacketBytesCount] = 2
+	// params[boot.KeyPacketBytesCount] = 2
 	params[boot.KeyConnType] = connector.NormalSocket
 	params[boot.KeyIP] = IP
 	params[boot.KeyPort] = Port

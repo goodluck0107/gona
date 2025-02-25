@@ -5,14 +5,12 @@ import (
 	"net"
 	"testing"
 	"time"
-
-	"gitee.com/andyxt/gona/boot"
 )
 
 func TestConnect(t *testing.T) {
 	params := make(map[string]interface{})
 	params["key"] = "clientValue"
-	params[boot.KeyPacketBytesCount] = 2
+	// params[boot.KeyPacketBytesCount] = 2
 	Connect(NormalSocket, "127.0.0.1", 10086, 3, newConnectSuccess(params), newConnectFail(params, func(err error, params map[string]interface{}) {
 		fmt.Println(params, "connectFail", err)
 	}))

@@ -7,7 +7,6 @@ import (
 	"strconv"
 	"time"
 
-	"gitee.com/andyxt/gona/boot"
 	"gitee.com/andyxt/gona/boot/logger"
 	"gitee.com/andyxt/gona/utils"
 )
@@ -18,7 +17,10 @@ const (
 	KeyIsLD             string = "KeyIsLD"             // 是否小端
 	KeyChannelReadLimit string = "KeyChannelReadLimit" // 连接读取消息长度限制
 
-	packetBytesCount int32 = 4 // 4个字节
+	KeyPacketBytesCount string = "KeyPacketBytesCount" // 消息长度占用字节数
+
+	KeyLengthInclude        string = "KeyLengthInclude"        // 包长度是否包含自己的长度
+	KeySkipPacketBytesCount string = "KeySkipPacketBytesCount" // 是否跳过包长度
 )
 
 type SocketChannelReader struct {
@@ -44,14 +46,11 @@ func NewSocketChannelReader(mConn net.Conn,
 	this.mChannelError = mChannelError
 	this.mChannelCallBack = mChannelCallBack
 	this.mChannelReadLimit = this.mContext.GetInt32(KeyChannelReadLimit)
-	this.mPacketBytesCount = this.mContext.GetInt32(boot.KeyPacketBytesCount)
-	if this.mPacketBytesCount <= 0 {
-		this.mPacketBytesCount = packetBytesCount
-	}
+	this.mPacketBytesCount = this.mContext.GetInt32(KeyPacketBytesCount)
 	this.mReadTimeOut = this.mContext.GetInt32(KeyReadTimeOut)
 	this.mIsLD = this.mContext.GetBool(KeyIsLD)
-	this.mLengthInclude = this.mContext.GetBool(boot.KeyLengthInclude)
-	this.mSkipPacketBytesCount = this.mContext.GetBool(boot.SkipPacketBytesCount)
+	this.mLengthInclude = this.mContext.GetBool(KeyLengthInclude)
+	this.mSkipPacketBytesCount = this.mContext.GetBool(KeySkipPacketBytesCount)
 	return
 }
 

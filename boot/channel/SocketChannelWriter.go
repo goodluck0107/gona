@@ -7,7 +7,6 @@ import (
 	"strconv"
 	"time"
 
-	"gitee.com/andyxt/gona/boot"
 	"gitee.com/andyxt/gona/boot/logger"
 	"gitee.com/andyxt/gona/utils"
 )
@@ -34,15 +33,12 @@ func NewSocketChannelWriter(mConn net.Conn,
 	this.mContext = mContext
 	this.mChannelError = mChannelError
 	this.mChannelCallBack = mChannelCallBack
-	this.mPacketBytesCount = this.mContext.GetInt32(boot.KeyPacketBytesCount)
-	if this.mPacketBytesCount <= 0 {
-		this.mPacketBytesCount = packetBytesCount
-	}
+	this.mPacketBytesCount = this.mContext.GetInt32(KeyPacketBytesCount)
 	this.mWriteTimeOut = this.mContext.GetInt32(KeyWriteTimeOut)
 	this.mIsLD = this.mContext.GetBool(KeyIsLD)
-	this.mLengthInclude = this.mContext.GetBool(boot.KeyLengthInclude)
+	this.mLengthInclude = this.mContext.GetBool(KeyLengthInclude)
 	this.writeMsgChan = make(chan *WriteEvent, ChannelChanSize)
-	this.mSkipPacketBytesCount = this.mContext.GetBool(boot.SkipPacketBytesCount)
+	this.mSkipPacketBytesCount = this.mContext.GetBool(KeySkipPacketBytesCount)
 	return
 }
 

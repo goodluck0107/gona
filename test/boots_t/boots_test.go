@@ -6,7 +6,6 @@ import (
 	"testing"
 	"time"
 
-	"gitee.com/andyxt/gona/boot"
 	"gitee.com/andyxt/gona/boot/boots"
 	"gitee.com/andyxt/gona/boot/channel"
 	"gitee.com/andyxt/gona/logger"
@@ -19,7 +18,6 @@ func TestClient(t *testing.T) {
 func testServer() {
 	params := make(map[string]interface{})
 	params["key"] = "serverValue"
-	params[boot.KeyPacketBytesCount] = 2
 	boots.Serve(
 		boots.WithTCPAddr(":20000"),
 		boots.WithChannelParams(params),
@@ -28,6 +26,7 @@ func testServer() {
 		boots.WithReadTimeOut(30),
 		boots.WithWriteTimeOut(30),
 		boots.WithReadLimit(512),
+		boots.WithPacketBytesCount(2),
 	)
 	for {
 		fmt.Println("当前协程数：", runtime.NumGoroutine())
