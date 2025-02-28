@@ -77,7 +77,6 @@ func (bootStrap *bootStrap) listenAndServeHttp() {
 				w.Header().Set("Access-Control-Allow-Credentials", "true") // 指示是否允许前端请求在跨域请求时携带认证信息（如 Cookies 和 HTTP 认证信息）
 				w.Header().Set("Access-Control-Max-Age", "86400")          // 指定预检请求（preflight request）的结果（即 OPTIONS 请求的响应）可以被缓存多久
 				w.WriteHeader(http.StatusOK)
-				w.Write([]byte("{\"success:\":true}"))
 				return
 			}
 			next.ServeHTTP(w, r)
