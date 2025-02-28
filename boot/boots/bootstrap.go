@@ -2,6 +2,7 @@ package boots
 
 import (
 	"fmt"
+	"io"
 	"net"
 	"net/http"
 	"strings"
@@ -22,17 +23,21 @@ type bootStrap struct {
 func (bootStrap *bootStrap) startup() error {
 	if bootStrap.TCPAddr != "" {
 		go bootStrap.listenAndServeTCP()
-		logger.StartUp("开始接受客户端tcp连接")
+		logger.StartUp("开始接受客户端tcp连接:", bootStrap.TCPAddr)
 	}
 	if bootStrap.HttpAddr != "" {
 		go bootStrap.listenAndServeHttp()
-		logger.StartUp("开始接受客户端http连接")
+		logger.StartUp("开始接受客户端http连接:", bootStrap.HttpAddr)
 	}
 	return nil
 }
 
 func (bootStrap *bootStrap) listenAndServeTCP() {
 	addr := bootStrap.wholeInterface(bootStrap.TCPAddr)
+	if bootStrap.Initializer == nil {
+		logger.Error("服务器启动异常:", addr, ":", "channel initializer is nil")
+		return
+	}
 	tcpAddr, err := net.ResolveTCPAddr("tcp4", addr)
 	if err != nil {
 		logger.Error("服务器启动异常:", addr, ":", err.Error())
@@ -43,6 +48,7 @@ func (bootStrap *bootStrap) listenAndServeTCP() {
 		logger.Error("服务器启动异常:", err.Error())
 		return
 	}
+	connParams := applyOption(bootStrap.Options)
 	for {
 		conn, err := listen.AcceptTCP()
 		if err != nil {
@@ -50,10 +56,6 @@ func (bootStrap *bootStrap) listenAndServeTCP() {
 			continue
 		}
 		logger.Info("收到新的客户端tcp连接请求:", conn.RemoteAddr())
-		connParams := make(map[string]interface{})
-		for k, v := range bootStrap.channelParams {
-			connParams[k] = v
-		}
 		SetConnParam(conn)
 		builder := channel.NewSocketChannelBuilder()
 		builder.Params(connParams)
@@ -114,48 +116,87 @@ func (bootStrap *bootStrap) listenAndServeHttp() {
 
 func (bootStrap *bootStrap) routerHandler(params map[string]string, w http.ResponseWriter, r *http.Request) {
 	logger.Info(fmt.Sprintf("收到新的http连接请求: %s %s %s %s", r.RemoteAddr, r.Method, r.URL, r.Proto))
+	if params == nil {
+		logger.Error("参数为空")
+		http.Error(w, "参数为空", http.StatusBadRequest)
+		return
+	}
 	for k, v := range params {
 		logger.Info("http连接请求param:", k, "=", v)
 	}
+	connParams := applyOption(bootStrap.Options)
+	initializer := bootStrap.Initializer
+	msgType := bootStrap.MsgType
+	// 根据router重设options与initializer
+	if bootStrap.RouterOptions != nil {
+		var routerOptions *Options
+		for routerPath, option := range bootStrap.RouterOptions {
+			if strings.Contains(r.URL.Path, routerPath) {
+				routerOptions = option
+				break
+			}
+		}
+		if routerOptions != nil {
+			connParams = applyOption(routerOptions)
+			initializer = routerOptions.Initializer
+			msgType = routerOptions.MsgType
+		}
+	}
+	var conn net.Conn
+	var err error
+
 	if upgrade, ok := params["upgrade"]; ok && upgrade == "websocket" {
 		logger.Info("http连接请求Upgrade websocket")
-		conn, err := wsupgrader.NewUpgrader().Upgrade(w, r, params, bootStrap.MsgType)
-		if err != nil {
-			logger.Error(fmt.Sprintf("http连接请求Upgrade websocket异常. URI=%s, Error=%s", r.RequestURI, err.Error()))
-			if conn != nil {
-				conn.Close()
-			}
-			return
-		}
-		connParams := make(map[string]interface{})
-		for k, v := range bootStrap.channelParams {
-			connParams[k] = v
-		}
-		connParams[boot.KeyURLPath] = r.URL.Path
-		SetWebSocketConnParam(conn)
-		builder := channel.NewSocketChannelBuilder()
-		builder.Params(connParams)
-		builder.Create(conn, bootStrap.Initializer)
-		return
+		conn, err = wsupgrader.NewUpgrader().Upgrade(w, r, params, msgType)
+	} else {
+		logger.Info("http连接请求Upgrade http")
+		conn, err = httpupgrader.NewUpgrader().Upgrade(w, r, params)
 	}
-	logger.Info("http连接请求Upgrade http")
-	conn, err := httpupgrader.NewUpgrader().Upgrade(w, r, params)
 	if err != nil {
-		logger.Error(fmt.Sprintf("http连接请求Upgrade http异常. URI=%s, Error=%s", r.RequestURI, err.Error()))
-		if conn != nil {
-			conn.Close()
+		logger.Error(fmt.Sprintf("http连接请求Upgrade异常. uri=%s, error=%s", r.RequestURI, err.Error()))
+		if c, ok := conn.(io.Closer); ok {
+			c.Close()
 		}
 		return
 	}
-	connParams := make(map[string]interface{})
-	for k, v := range bootStrap.channelParams {
-		connParams[k] = v
+	if initializer == nil {
+		logger.Error("连接初始化异常:", r.URL.Path, ":", "channel initializer is nil")
+		if c, ok := conn.(io.Closer); ok {
+			c.Close()
+		}
+		return
 	}
 	connParams[boot.KeyURLPath] = r.URL.Path
 	SetWebSocketConnParam(conn)
 	builder := channel.NewSocketChannelBuilder()
 	builder.Params(connParams)
-	builder.Create(conn, bootStrap.Initializer)
+	builder.Create(conn, initializer)
+}
+
+func applyOption(opt *Options) map[string]any {
+	channelParams := make(map[string]any)
+	if opt.ByteOrder == byteOrderLittleEndian {
+		channelParams[channel.KeyIsLD] = true
+	}
+	if opt.ReadTimeOut != 0 {
+		channelParams[channel.KeyReadTimeOut] = opt.ReadTimeOut
+	}
+	if opt.WriteTimeOut != 0 {
+		channelParams[channel.KeyWriteTimeOut] = opt.WriteTimeOut
+	}
+	if opt.ReadLimit > 0 {
+		channelParams[channel.KeyChannelReadLimit] = opt.ReadLimit
+	}
+	if opt.PacketBytesCount > 0 {
+		channelParams[channel.KeyPacketBytesCount] = opt.PacketBytesCount
+	}
+	if opt.LengthInclude {
+		channelParams[channel.KeyLengthInclude] = true
+	}
+	if opt.SkipPacketBytesCount {
+		channelParams[channel.KeySkipPacketBytesCount] = true
+	}
+	return channelParams
 }
 
 func (bootStrap *bootStrap) wholeInterface(addr string) string {
