@@ -29,8 +29,8 @@ type Options struct {
 	Initializer   channel.ChannelInitializer
 	Logger        logger.Logger
 	RouterOptions map[string]*Options // 分组配置 (key:routerPath, value:options)
-	MsgType       int
-
+	MsgType       int                 // WebSocket 消息类型
+	HttpHungup    bool                // Http请求是否挂起
 	//// param for conn
 	ByteOrder            ByteOrder // 字节序
 	ReadTimeOut          int32     // 连接读取消息超时时间
@@ -54,5 +54,6 @@ var defaultValue = &Options{
 	PacketBytesCount:     4,     // 4个字节
 	LengthInclude:        false, // 包长度不包含自己的字节数
 	SkipPacketBytesCount: false, // 不跳过包长度
+	HttpHungup:           false, // Http请求不挂起
 	RouterOptions:        make(map[string]*Options),
 }

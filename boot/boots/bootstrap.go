@@ -141,35 +141,54 @@ func (bootStrap *bootStrap) routerHandler(params map[string]string, w http.Respo
 			msgType = routerOptions.MsgType
 		}
 	}
-	var conn net.Conn
-	var err error
+
+	if initializer == nil {
+		logger.Error("连接初始化异常:", r.URL.Path, ":", "channel initializer is nil")
+		r.Body.Close()
+		return
+	}
 
 	if upgrade, ok := params["upgrade"]; ok && upgrade == "websocket" {
 		logger.Info("http连接请求Upgrade websocket")
-		conn, err = wsupgrader.NewUpgrader().Upgrade(w, r, params, msgType)
-	} else {
+		conn, err := wsupgrader.NewUpgrader().Upgrade(w, r, params, msgType)
+		if err != nil {
+			logger.Error(fmt.Sprintf("http连接请求Upgrade异常. uri=%s, error=%s", r.RequestURI, err.Error()))
+			if c, ok := conn.(io.Closer); ok {
+				c.Close()
+			}
+			return
+		}
+
+		connParams[boot.KeyURLPath] = r.URL.Path
+		SetWebSocketConnParam(conn)
+		builder := channel.NewSocketChannelBuilder()
+		builder.Params(connParams)
+		builder.Create(conn, initializer)
+		return
+	}
+	if bootStrap.HttpHungup {
 		logger.Info("http连接请求Upgrade http")
-		conn, err = httpupgrader.NewUpgrader().Upgrade(w, r, params)
-	}
-	if err != nil {
-		logger.Error(fmt.Sprintf("http连接请求Upgrade异常. uri=%s, error=%s", r.RequestURI, err.Error()))
-		if c, ok := conn.(io.Closer); ok {
-			c.Close()
+		conn, err := httpupgrader.NewUpgrader().Upgrade(w, r, params)
+		if err != nil {
+			logger.Error(fmt.Sprintf("http连接请求Upgrade异常. uri=%s, error=%s", r.RequestURI, err.Error()))
+			if c, ok := conn.(io.Closer); ok {
+				c.Close()
+			}
+			return
 		}
+		connParams[boot.KeyURLPath] = r.URL.Path
+		SetWebSocketConnParam(conn)
+		builder := channel.NewSocketChannelBuilder()
+		builder.Params(connParams)
+		builder.Create(conn, initializer)
 		return
 	}
-	if initializer == nil {
-		logger.Error("连接初始化异常:", r.URL.Path, ":", "channel initializer is nil")
-		if c, ok := conn.(io.Closer); ok {
-			c.Close()
-		}
-		return
-	}
+	// handle http 请求
 	connParams[boot.KeyURLPath] = r.URL.Path
-	SetWebSocketConnParam(conn)
-	builder := channel.NewSocketChannelBuilder()
-	builder.Params(connParams)
-	builder.Create(conn, initializer)
+	connChannel := channel.NewHttpChannel(connParams, w, r, initializer)
+	connChannel.Start()
+	return
+
 }
 
 func applyOption(opt *Options) map[string]any {

@@ -73,6 +73,12 @@ func WithMsgType(msgType int) Option {
 	}
 }
 
+func WithHttpHungup() Option {
+	return func(opt *Options) {
+		opt.HttpHungup = true
+	}
+}
+
 // 连接读取消息超时时间
 func WithReadTimeOut(readTimeOut int32) Option {
 	return func(opt *Options) {
