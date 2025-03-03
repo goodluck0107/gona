@@ -16,7 +16,7 @@ func TestBootStrap(t *testing.T) {
 	boots.Serve(
 		boots.WithHttpAddr(fmt.Sprintf(":%v", WsPort),
 			boots.WithRouterOption(
-				"websocket/third/pg/",
+				"/websocket/third/pg/",
 				boots.WithInitializer(NewChannelInitializer("pg")),
 				boots.WithMsgType(websocket.BinaryMessage),
 				boots.WithReadTimeOut(-1),
@@ -27,7 +27,7 @@ func TestBootStrap(t *testing.T) {
 				boots.WithKeyLengthInclude(),
 			),
 			boots.WithRouterOption(
-				"websocket/third/jili/",
+				"/websocket/third/jili/",
 				boots.WithInitializer(NewChannelInitializer("jili")),
 				boots.WithMsgType(websocket.TextMessage),
 				boots.WithReadTimeOut(-1),
