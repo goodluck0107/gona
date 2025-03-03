@@ -56,7 +56,7 @@ func (bootStrap *bootStrap) listenAndServeTCP() {
 			continue
 		}
 		logger.Info("收到新的客户端tcp连接请求:", conn.RemoteAddr())
-		SetConnParam(conn)
+		setConnParams(conn)
 		builder := channel.NewSocketChannelBuilder()
 		builder.Params(connParams)
 		builder.Create(conn, bootStrap.Initializer)
@@ -64,53 +64,64 @@ func (bootStrap *bootStrap) listenAndServeTCP() {
 }
 
 func (bootStrap *bootStrap) listenAndServeHttp() {
-	router := mux.NewRouter()
-	router.Use(func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("X-Powered-By", "Jetty")                                                                                    // 标识服务器端使用的技术或框架
-			w.Header().Set("Content-Type", "application/json")                                                                         // 指示实际发送的数据类型的头部字段
-			w.Header().Set("Access-Control-Allow-Origin", "*")                                                                         // 指定哪些网站可以参与跨源资源共享（CORS，Cross-Origin Resource Sharing）
-			w.Header().Set("Access-Control-Allow-Methods", "GET,PUT,POST,GET,DELETE,OPTIONS")                                          // 指定允许跨域请求的 HTTP 方法
-			w.Header().Set("Access-Control-Allow-Headers", "Origin,X-Requested-With,Content-Type,Content-Length,Accept,Authorization") // 指定了在跨源请求中，浏览器可以携带到服务器端的自定义请求头的列表
-			if r.Method == "OPTIONS" {
-				defer r.Body.Close()
-				w.Header().Set("Access-Control-Allow-Credentials", "true") // 指示是否允许前端请求在跨域请求时携带认证信息（如 Cookies 和 HTTP 认证信息）
-				w.Header().Set("Access-Control-Max-Age", "86400")          // 指定预检请求（preflight request）的结果（即 OPTIONS 请求的响应）可以被缓存多久
-				w.WriteHeader(http.StatusOK)
-				return
-			}
-			next.ServeHTTP(w, r)
-		})
-	})
-	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		params := mux.Vars(r)
-		bootStrap.routerHandler(params, w, r)
-	})
-	router.HandleFunc("/{upgrade:[A-Za-z0-9\\.]*}", func(w http.ResponseWriter, r *http.Request) {
-		params := mux.Vars(r)
-		bootStrap.routerHandler(params, w, r)
-	})
-	// router.HandleFunc("/{upgrade:[A-Za-z0-9\\.]*}/{route:[A-Za-z0-9\\-]*}", func(w http.ResponseWriter, r *http.Request) {
-	// 	params := mux.Vars(r)
-	// 	bootStrap.routerHandler(params, w, r)
-	// })
-	router.HandleFunc("/{upgrade:[A-Za-z0-9\\.]*}/{route:.*}", func(w http.ResponseWriter, r *http.Request) {
-		params := mux.Vars(r)
-		bootStrap.routerHandler(params, w, r)
-	})
-	http.Handle("/", router)
+	router := bootStrap.configureRouter()
 
 	addr := bootStrap.wholeInterface(bootStrap.HttpAddr)
 	if bootStrap.TLSCertificate != "" && bootStrap.TLSKey != "" {
-		if err := http.ListenAndServeTLS(addr, bootStrap.TLSCertificate, bootStrap.TLSKey,
-			nil); err != nil {
+		if err := http.ListenAndServeTLS(addr, bootStrap.TLSCertificate, bootStrap.TLSKey, router); err != nil {
 			utils.CheckError(err)
 		}
 	} else {
-		if err := http.ListenAndServe(addr, nil); err != nil {
+		if err := http.ListenAndServe(addr, router); err != nil {
 			utils.CheckError(err)
 		}
 	}
+}
+
+func (bootStrap *bootStrap) configureRouter() *mux.Router {
+	router := mux.NewRouter()
+	router.Use(bootStrap.commonMiddleware)
+
+	router.HandleFunc("/", bootStrap.rootHandler)
+	router.HandleFunc("/{upgrade:[A-Za-z0-9\\.]*}", bootStrap.upgradeHandler)
+	router.HandleFunc("/{upgrade:[A-Za-z0-9\\.]*}/{route:.*}", bootStrap.routeHandler)
+
+	return router
+}
+
+func (bootStrap *bootStrap) commonMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Access-Control-Allow-Origin", "*") // 建议根据实际需求限制允许的来源
+		w.Header().Set("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Origin,X-Requested-With,Content-Type,Content-Length,Accept,Authorization")
+
+		if r.Method == "OPTIONS" {
+			if r.Body != nil {
+				defer r.Body.Close()
+			}
+			w.Header().Set("Access-Control-Allow-Credentials", "true")
+			w.Header().Set("Access-Control-Max-Age", "86400")
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
+func (bootStrap *bootStrap) rootHandler(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	bootStrap.routerHandler(params, w, r)
+}
+
+func (bootStrap *bootStrap) upgradeHandler(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	bootStrap.routerHandler(params, w, r)
+}
+
+func (bootStrap *bootStrap) routeHandler(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	bootStrap.routerHandler(params, w, r)
 }
 
 func (bootStrap *bootStrap) routerHandler(params map[string]string, w http.ResponseWriter, r *http.Request) {
@@ -130,7 +141,7 @@ func (bootStrap *bootStrap) routerHandler(params map[string]string, w http.Respo
 	if bootStrap.RouterOptions != nil {
 		var routerOptions *Options
 		for routerPath, option := range bootStrap.RouterOptions {
-			if strings.Contains(r.URL.Path, routerPath) {
+			if strings.HasPrefix(r.URL.Path, routerPath) {
 				routerOptions = option
 				break
 			}
@@ -158,9 +169,8 @@ func (bootStrap *bootStrap) routerHandler(params map[string]string, w http.Respo
 			}
 			return
 		}
-
 		connParams[boot.KeyURLPath] = r.URL.Path
-		SetWebSocketConnParam(conn)
+		setConnParams(conn)
 		builder := channel.NewSocketChannelBuilder()
 		builder.Params(connParams)
 		builder.Create(conn, initializer)
@@ -177,7 +187,7 @@ func (bootStrap *bootStrap) routerHandler(params map[string]string, w http.Respo
 			return
 		}
 		connParams[boot.KeyURLPath] = r.URL.Path
-		SetWebSocketConnParam(conn)
+		setConnParams(conn)
 		builder := channel.NewSocketChannelBuilder()
 		builder.Params(connParams)
 		builder.Create(conn, initializer)
@@ -187,8 +197,6 @@ func (bootStrap *bootStrap) routerHandler(params map[string]string, w http.Respo
 	connParams[boot.KeyURLPath] = r.URL.Path
 	connChannel := channel.NewHttpChannel(connParams, w, r, initializer)
 	connChannel.Start()
-	return
-
 }
 
 func applyOption(opt *Options) map[string]any {
@@ -221,14 +229,13 @@ func (bootStrap *bootStrap) wholeInterface(addr string) string {
 	return addr[strings.Index(addr, ":"):]
 }
 
-// 设置Http参数
-func SetWebSocketConnParam(conn net.Conn) {
-
-}
-
-// 设置Tcp参数
-func SetConnParam(conn *net.TCPConn) {
-	conn.SetNoDelay(true)
-	conn.SetKeepAlive(true)
-	conn.SetLinger(8)
+func setConnParams(conn interface{}) {
+	switch c := conn.(type) {
+	case *net.TCPConn: // 设置Tcp参数
+		c.SetNoDelay(true)
+		c.SetKeepAlive(true)
+		c.SetLinger(8)
+	case net.Conn:
+		// 可以添加其他类型的连接参数设置
+	}
 }
