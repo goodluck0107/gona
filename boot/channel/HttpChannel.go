@@ -65,7 +65,7 @@ func (chanenl *HttpChannel) Start() {
 		logger.Warn(fmt.Sprintf("http read error:%v", readErr))
 		return
 	}
-	logger.Info(fmt.Sprintf("http receive reqBody:%v", reqBody))
+	logger.Info(fmt.Sprintf("http receive reqBody:%v", string(reqBody)))
 	chanenl.mPipeline.FireMessageReceived(reqBody)
 }
 
