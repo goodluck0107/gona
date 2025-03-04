@@ -137,6 +137,7 @@ func (bootStrap *bootStrap) routerHandler(params map[string]string, w http.Respo
 	connParams := applyOption(bootStrap.Options)
 	initializer := bootStrap.Initializer
 	msgType := bootStrap.MsgType
+	hungUp := bootStrap.HttpHungup
 	// 根据router重设options与initializer
 	if bootStrap.RouterOptions != nil {
 		var routerOptions *Options
@@ -150,6 +151,7 @@ func (bootStrap *bootStrap) routerHandler(params map[string]string, w http.Respo
 			connParams = applyOption(routerOptions)
 			initializer = routerOptions.Initializer
 			msgType = routerOptions.MsgType
+			hungUp = routerOptions.HttpHungup
 		}
 	}
 
@@ -176,7 +178,7 @@ func (bootStrap *bootStrap) routerHandler(params map[string]string, w http.Respo
 		builder.Create(conn, initializer)
 		return
 	}
-	if bootStrap.HttpHungup {
+	if hungUp {
 		logger.Info("http连接请求Upgrade http")
 		conn, err := httpupgrader.NewUpgrader().Upgrade(w, r, params)
 		if err != nil {
