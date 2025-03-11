@@ -58,6 +58,7 @@ func (bootStrap *bootStrap) listenAndServeTCP() {
 		logger.Info("收到新的客户端tcp连接请求:", conn.RemoteAddr())
 		setConnParams(conn)
 		builder := channel.NewSocketChannelBuilder()
+		connParams[boot.KeyConnType] = boot.ConnTypeTcp
 		builder.Params(connParams)
 		builder.Create(conn, bootStrap.Initializer)
 	}
@@ -171,6 +172,7 @@ func (bootStrap *bootStrap) routerHandler(params map[string]string, w http.Respo
 			}
 			return
 		}
+		connParams[boot.KeyConnType] = boot.ConnTypeWs
 		connParams[boot.KeyURLPath] = r.URL.Path
 		setConnParams(conn)
 		builder := channel.NewSocketChannelBuilder()
@@ -188,6 +190,7 @@ func (bootStrap *bootStrap) routerHandler(params map[string]string, w http.Respo
 			}
 			return
 		}
+		connParams[boot.KeyConnType] = boot.ConnTypeHttp
 		connParams[boot.KeyURLPath] = r.URL.Path
 		setConnParams(conn)
 		builder := channel.NewSocketChannelBuilder()
@@ -196,6 +199,7 @@ func (bootStrap *bootStrap) routerHandler(params map[string]string, w http.Respo
 		return
 	}
 	// handle http 请求
+	connParams[boot.KeyConnType] = boot.ConnTypeHttp
 	connParams[boot.KeyURLPath] = r.URL.Path
 	connChannel := channel.NewHttpChannel(connParams, w, r, initializer)
 	connChannel.Start()
