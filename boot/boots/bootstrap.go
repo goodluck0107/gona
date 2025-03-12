@@ -142,9 +142,9 @@ func (bootStrap *bootStrap) routerHandler(params map[string]string, w http.Respo
 	// 根据router重设options与initializer
 	if bootStrap.RouterOptions != nil {
 		var routerOptions *Options
-		for routerPath, option := range bootStrap.RouterOptions {
-			if strings.HasPrefix(r.URL.Path, routerPath) {
-				routerOptions = option
+		for _, routerOption := range bootStrap.RouterOptions {
+			if routerOption.router(r.URL.Path) {
+				routerOptions = routerOption.Opts
 				break
 			}
 		}

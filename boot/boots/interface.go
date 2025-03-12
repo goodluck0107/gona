@@ -33,19 +33,19 @@ func WithTCPAddr(addr string) Option {
 func WithHttpAddr(httpAddr string, opts ...*RouterOption) Option {
 	return func(opt *Options) {
 		opt.HttpAddr = httpAddr
-		opt.RouterOptions = make(map[string]*Options)
+		opt.RouterOptions = make([]*RouterOption, 0)
 		for _, v := range opts {
-			opt.RouterOptions[v.RouterPath] = v.Opts
+			opt.RouterOptions = append(opt.RouterOptions, v)
 		}
 	}
 }
 
-func WithRouterOption(router string, opts ...Option) *RouterOption {
+func WithRouterOption(router Router, opts ...Option) *RouterOption {
 	opt := defaultOptions()
 	for _, v := range opts {
 		v(opt)
 	}
-	return &RouterOption{RouterPath: router, Opts: opt}
+	return &RouterOption{router: router, Opts: opt}
 }
 
 // WithTLSConfig sets the `key` and `certificate` of TLS
