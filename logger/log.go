@@ -11,7 +11,7 @@ import (
 	"gitee.com/andyxt/gona/utils"
 )
 
-var logLevel int = LogLevelDebug
+var logLevel int = LogLevelInfo
 var printLevel int = LogLevelError
 
 func SetLogLevel(targetLevel int) {
