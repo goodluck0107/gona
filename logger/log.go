@@ -179,11 +179,3 @@ var infoLogger *MyLog = NewMyLog("infoLog")
 var errorLogger *MyLog = NewMyLog("errorLog")
 var warnLogger *MyLog = NewMyLog("warnLog")
 var debugLogger *MyLog = NewMyLog("debugLog")
-
-const (
-	LogLevelNone  int = 0
-	LogLevelError int = 1
-	LogLevelWarn  int = 2
-	LogLevelInfo  int = 3
-	LogLevelDebug int = 4
-)
