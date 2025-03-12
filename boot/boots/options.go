@@ -39,6 +39,8 @@ type Options struct {
 	PacketBytesCount     int32     // 消息长度占用字节数
 	LengthInclude        bool      // 包长度是否包含自己的长度
 	SkipPacketBytesCount bool      // 跳过包长度
+	//// param for custom
+	CustomDefine map[string]any
 }
 
 func defaultOptions() *Options {
@@ -56,4 +58,5 @@ var defaultValue = &Options{
 	SkipPacketBytesCount: false, // 不跳过包长度
 	HttpHungup:           false, // Http请求不挂起
 	RouterOptions:        make(map[string]*Options),
+	CustomDefine:         make(map[string]any),
 }

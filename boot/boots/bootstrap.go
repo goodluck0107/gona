@@ -228,6 +228,11 @@ func applyOption(opt *Options) map[string]any {
 	if opt.SkipPacketBytesCount {
 		channelParams[channel.KeySkipPacketBytesCount] = true
 	}
+	if len(opt.CustomDefine) > 0 {
+		for k, v := range opt.CustomDefine {
+			channelParams[k] = v
+		}
+	}
 	return channelParams
 }
 

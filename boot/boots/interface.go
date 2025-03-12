@@ -128,4 +128,10 @@ func WithSkipPacketBytesCount() Option {
 	}
 }
 
+func WithCustom(key string, value any) Option {
+	return func(opt *Options) {
+		opt.CustomDefine[key] = value
+	}
+}
+
 type Option func(*Options)
