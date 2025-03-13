@@ -8,7 +8,6 @@ import (
 
 	"gitee.com/andyxt/gona/boot/boots"
 	"gitee.com/andyxt/gona/boot/channel"
-	"gitee.com/andyxt/gona/logger"
 )
 
 func TestClient(t *testing.T) {
@@ -19,7 +18,6 @@ func testServer() {
 	boots.Serve(
 		boots.WithHttpAddr(":20000"),
 		boots.WithInitializer(NewTestChannelInitializer()),
-		boots.WithLogger(logger.GetLogger()),
 		boots.WithReadTimeOut(30),
 		boots.WithWriteTimeOut(30),
 		boots.WithReadLimit(512),

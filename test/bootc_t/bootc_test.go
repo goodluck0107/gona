@@ -10,7 +10,6 @@ import (
 	"gitee.com/andyxt/gona/boot/bootc/connector"
 	"gitee.com/andyxt/gona/boot/bootc/listener"
 	"gitee.com/andyxt/gona/boot/channel"
-	"gitee.com/andyxt/gona/logger"
 )
 
 func TestClient(t *testing.T) {
@@ -23,7 +22,6 @@ func testClient() {
 	connConnector :=
 		bootc.Serv(
 			bootc.WithInitializer(NewTestChannelInitializer()),
-			bootc.WithLogger(logger.GetLogger()),
 			bootc.WithReadTimeOut(30),
 			bootc.WithWriteTimeOut(30),
 			bootc.WithReadLimit(512),
