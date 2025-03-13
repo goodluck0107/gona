@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"gitee.com/andyxt/gona/boot/logger"
+	"gitee.com/andyxt/gona/internal/logger"
 	"gitee.com/andyxt/gona/utils"
 )
 

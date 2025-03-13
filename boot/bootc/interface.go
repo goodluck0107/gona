@@ -5,7 +5,7 @@ import (
 
 	"gitee.com/andyxt/gona/boot/bootc/listener"
 	"gitee.com/andyxt/gona/boot/channel"
-	"gitee.com/andyxt/gona/boot/logger"
+	"gitee.com/andyxt/gona/internal/logger"
 	"github.com/mohae/deepcopy"
 )
 

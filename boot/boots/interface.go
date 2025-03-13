@@ -2,7 +2,7 @@ package boots
 
 import (
 	"gitee.com/andyxt/gona/boot/channel"
-	"gitee.com/andyxt/gona/boot/logger"
+	"gitee.com/andyxt/gona/internal/logger"
 )
 
 func Serve(opts ...Option) {

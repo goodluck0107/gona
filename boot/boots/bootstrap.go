@@ -11,7 +11,7 @@ import (
 	"gitee.com/andyxt/gona/boot/boots/httpupgrader"
 	"gitee.com/andyxt/gona/boot/boots/wsupgrader"
 	"gitee.com/andyxt/gona/boot/channel"
-	"gitee.com/andyxt/gona/boot/logger"
+	"gitee.com/andyxt/gona/internal/logger"
 	"gitee.com/andyxt/gona/utils"
 	"github.com/gorilla/mux"
 )
