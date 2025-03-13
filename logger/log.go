@@ -5,14 +5,20 @@ import (
 	"io"
 	"log"
 	"os"
+	"path/filepath"
 	"runtime"
 	"time"
 
 	"gitee.com/andyxt/gona/utils"
 )
 
+var logPath string = ""
 var logLevel int = LogLevelInfo
 var printLevel int = LogLevelError
+
+func SetLogPath(targetPath string) {
+	logPath = targetPath
+}
 
 func SetLogLevel(targetLevel int) {
 	logLevel = targetLevel
@@ -67,22 +73,27 @@ func NewMyLogNoTime(logType string) *MyLog {
 	return MyLoger
 }
 func (mylog *MyLog) logInit(fileName string) {
-	cdir, err := os.Getwd()
-	utils.CheckError(err)
 	var path string
-	path = cdir
-
-	if runtime.GOOS == "windows" {
-		path = path + "\\log\\"
+	if logPath != "" {
+		path = logPath
 	} else {
-		path = path + "/log/"
+		cdir, err := os.Getwd()
+		utils.CheckError(err)
+		path = cdir
+		if runtime.GOOS == "windows" {
+			path = path + "\\log\\"
+		} else {
+			path = path + "/log/"
+		}
 	}
-	err = os.MkdirAll(path, 0777)
+
+	err := os.MkdirAll(path, 0777)
 	utils.CheckError(err)
 	if mylog.m_init == 1 {
 		_ = mylog.logFile.Close()
 	}
-	mylog.logFile, err = os.OpenFile(path+mylog.typeName+fileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0777)
+	filePath := filepath.Join(path, mylog.typeName+fileName)
+	mylog.logFile, err = os.OpenFile(filePath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0777)
 	if err != nil {
 		fmt.Printf("open file error=%s\r\n", err.Error())
 		os.Exit(-1)
