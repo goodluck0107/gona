@@ -95,9 +95,9 @@ func (chanenl *HttpChannel) Close() {
 // 			logger.Error(context.ID(), fmt.Sprint(recoverErr, string(utils.Stack(3))))
 // 		}
 // 	}()
-// 	msg, ok := e.(message.IMessage)
+// 	msg, ok := e.(message.CustomMessage)
 // 	if !ok {
-// 		logger.Error(fmt.Sprintf("%v convErr:%v", context.ID(), "write msg isnt message.IMessage"))
+// 		logger.Error(fmt.Sprintf("%v convErr:%v", context.ID(), "write msg isnt message.CustomMessage"))
 // 		return
 // 	}
 // 	respData, encodeE := msg.Encode()
