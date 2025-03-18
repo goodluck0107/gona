@@ -8,10 +8,8 @@ func StartUp(v ...interface{}) {
 	log.StartUp(v...)
 }
 func Debug(v ...interface{}) {
-	log.Debug(v...)
 }
 func Info(v ...interface{}) {
-	log.Info(v...)
 }
 func Warn(v ...interface{}) {
 	log.Warn(v...)
