@@ -5,7 +5,7 @@ import (
 )
 
 func StartUp(v ...interface{}) {
-	log.StartUp(v...)
+	log.Info(v...)
 }
 func Debug(v ...interface{}) {
 }
@@ -27,9 +27,6 @@ var log Logger = &debugLog{}
 type debugLog struct {
 }
 
-func (d *debugLog) StartUp(v ...interface{}) {
-	fmt.Println(v...)
-}
 func (d *debugLog) Debug(v ...interface{}) {
 	fmt.Println(v...)
 }
