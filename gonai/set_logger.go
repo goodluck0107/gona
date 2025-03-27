@@ -1,4 +1,4 @@
-package goxi
+package gonai
 
 import "gitee.com/andyxt/gona/internal/logger"
 
