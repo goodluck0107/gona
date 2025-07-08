@@ -85,7 +85,7 @@ func (bootStrap *bootStrap) configureRouter() *mux.Router {
 
 	router.HandleFunc("/", bootStrap.rootHandler)
 	router.HandleFunc("/{upgrade:[A-Za-z0-9\\.]*}", bootStrap.upgradeHandler)
-	router.HandleFunc("/{upgrade:[A-Za-z0-9\\.]*}/{route:.*}", bootStrap.routeHandler)
+	router.HandleFunc("/{upgrade:[A-Za-z0-9\\.\\-]*}/{route:.*}", bootStrap.routeHandler)
 
 	return router
 }
