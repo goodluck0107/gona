@@ -95,7 +95,7 @@ func (bootStrap *bootStrap) commonMiddleware(next http.Handler) http.Handler {
 		w.Header().Set("Content-Type", "application/json")
 		w.Header().Set("Access-Control-Allow-Origin", "*") // 建议根据实际需求限制允许的来源
 		w.Header().Set("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Origin,X-Requested-With,Content-Type,Content-Length,Accept,Authorization")
+		w.Header().Set("Access-Control-Allow-Headers", "Origin,X-Requested-With,Content-Type,Content-Length,Accept,Authorization,X-Request-Info")
 
 		if r.Method == "OPTIONS" {
 			if r.Body != nil {
