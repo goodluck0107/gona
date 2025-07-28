@@ -192,6 +192,7 @@ func (bootStrap *bootStrap) routerHandler(params map[string]string, w http.Respo
 		}
 		connParams[boot.KeyConnType] = boot.ConnTypeHttp
 		connParams[boot.KeyURLPath] = r.URL.Path
+        connParams[channel.KeyForRequest] = r
 		setConnParams(conn)
 		builder := channel.NewSocketChannelBuilder()
 		builder.Params(connParams)
