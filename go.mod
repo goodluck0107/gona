@@ -1,4 +1,4 @@
-module gitee.com/monobytes/gona
+module gitee.com/andyxt/gona
 
 go 1.23.6
 
@@ -9,5 +9,3 @@ require (
 	github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826
 	github.com/shopspring/decimal v1.4.0
 )
-
-replace gitee.com/andyxt/gona => gitee.com/monobytes/gona v1.1.2
