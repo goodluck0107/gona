@@ -132,9 +132,7 @@ func (bootStrap *bootStrap) routerHandler(params map[string]string, w http.Respo
 		http.Error(w, "参数为空", http.StatusBadRequest)
 		return
 	}
-	for k, v := range params {
-		logger.Debug("http连接请求param:", k, "=", v)
-	}
+	logger.Debug(fmt.Sprintf("http连接请求param: %v", params))
 	connParams := applyOption(bootStrap.Options)
 	initializer := bootStrap.Initializer
 	msgType := bootStrap.MsgType
