@@ -1,4 +1,4 @@
-module gitee.com/andyxt/gona
+module github.com/goodluck0107/gona
 
 go 1.23.6
 

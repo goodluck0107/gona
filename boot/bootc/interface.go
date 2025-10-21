@@ -3,9 +3,9 @@ package bootc
 import (
 	"fmt"
 
-	"gitee.com/andyxt/gona/boot/bootc/listener"
-	"gitee.com/andyxt/gona/boot/channel"
-	"gitee.com/andyxt/gona/internal/logger"
+	"github.com/goodluck0107/gona/boot/bootc/listener"
+	"github.com/goodluck0107/gona/boot/channel"
+	"github.com/goodluck0107/gona/internal/logger"
 	"github.com/mohae/deepcopy"
 )
 

@@ -6,10 +6,10 @@ import (
 	"testing"
 	"time"
 
-	"gitee.com/andyxt/gona/boot/bootc"
-	"gitee.com/andyxt/gona/boot/bootc/connector"
-	"gitee.com/andyxt/gona/boot/bootc/listener"
-	"gitee.com/andyxt/gona/boot/channel"
+	"github.com/goodluck0107/gona/boot/bootc"
+	"github.com/goodluck0107/gona/boot/bootc/connector"
+	"github.com/goodluck0107/gona/boot/bootc/listener"
+	"github.com/goodluck0107/gona/boot/channel"
 )
 
 func TestClient(t *testing.T) {

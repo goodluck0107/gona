@@ -3,7 +3,7 @@ package listener
 import (
 	"net"
 
-	"gitee.com/andyxt/gona/boot/bootc/connector"
+	"github.com/goodluck0107/gona/boot/bootc/connector"
 )
 
 const (

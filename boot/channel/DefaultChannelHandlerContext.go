@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	"gitee.com/andyxt/gona/internal/logger"
-	"gitee.com/andyxt/gona/utils"
+	"github.com/goodluck0107/gona/internal/logger"
+	"github.com/goodluck0107/gona/utils"
 )
 
 type DefaultChannelHandlerContext struct {

@@ -7,12 +7,12 @@ import (
 	"net/http"
 	"strings"
 
-	"gitee.com/andyxt/gona/boot"
-	"gitee.com/andyxt/gona/boot/boots/httpupgrader"
-	"gitee.com/andyxt/gona/boot/boots/wsupgrader"
-	"gitee.com/andyxt/gona/boot/channel"
-	"gitee.com/andyxt/gona/internal/logger"
-	"gitee.com/andyxt/gona/utils"
+	"github.com/goodluck0107/gona/boot"
+	"github.com/goodluck0107/gona/boot/boots/httpupgrader"
+	"github.com/goodluck0107/gona/boot/boots/wsupgrader"
+	"github.com/goodluck0107/gona/boot/channel"
+	"github.com/goodluck0107/gona/internal/logger"
+	"github.com/goodluck0107/gona/utils"
 	"github.com/gorilla/mux"
 )
 
@@ -192,7 +192,7 @@ func (bootStrap *bootStrap) routerHandler(params map[string]string, w http.Respo
 		}
 		connParams[boot.KeyConnType] = boot.ConnTypeHttp
 		connParams[boot.KeyURLPath] = r.URL.Path
-        connParams[channel.KeyForRequest] = r
+		connParams[channel.KeyForRequest] = r
 		setConnParams(conn)
 		builder := channel.NewSocketChannelBuilder()
 		builder.Params(connParams)

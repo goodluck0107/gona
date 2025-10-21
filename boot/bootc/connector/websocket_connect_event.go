@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"time"
 
-	"gitee.com/andyxt/gona/internal/logger"
+	"github.com/goodluck0107/gona/internal/logger"
 	"github.com/gorilla/websocket"
 )
 

@@ -1,8 +1,8 @@
 package boots
 
 import (
-	"gitee.com/andyxt/gona/boot/channel"
-	"gitee.com/andyxt/gona/internal/logger"
+	"github.com/goodluck0107/gona/boot/channel"
+	"github.com/goodluck0107/gona/internal/logger"
 	"github.com/gorilla/websocket"
 	"github.com/mohae/deepcopy"
 )

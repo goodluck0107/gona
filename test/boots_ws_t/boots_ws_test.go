@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"gitee.com/andyxt/gona/boot/boots"
-	"gitee.com/andyxt/gona/boot/channel"
+	"github.com/goodluck0107/gona/boot/boots"
+	"github.com/goodluck0107/gona/boot/channel"
 )
 
 func TestClient(t *testing.T) {

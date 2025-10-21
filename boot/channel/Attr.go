@@ -3,7 +3,7 @@ package channel
 import (
 	"sync"
 
-	"gitee.com/andyxt/gona/utils/cast"
+	"github.com/goodluck0107/gona/utils/cast"
 )
 
 type Attr struct {
