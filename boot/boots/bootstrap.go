@@ -179,7 +179,7 @@ func (bootStrap *bootStrap) routerHandler(params map[string]string, w http.Respo
 		return
 	}
 	if hungUp {
-		logger.Info("http连接请求Upgrade http")
+		logger.Debug("http连接请求Upgrade http")
 		conn, err := httpupgrader.NewUpgrader().Upgrade(w, r, params)
 		if err != nil {
 			logger.Error(fmt.Sprintf("http连接请求Upgrade异常. uri=%s, error=%s", r.RequestURI, err.Error()))
