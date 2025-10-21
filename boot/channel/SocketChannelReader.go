@@ -74,7 +74,7 @@ func (reader *SocketChannelReader) runReadRoutine(startChan chan int) {
 				reader.mChannelCallBack.MsgReceived(protocolData)
 			}
 		} else {
-			logger.Warn("SocketChannelReader ReadRoutine", "chlCtxID=", reader.mContext.ID(), "error:", err)
+			logger.Debug("SocketChannelReader ReadRoutine", "chlCtxID=", reader.mContext.ID(), "error:", err)
 			break
 		}
 	}
