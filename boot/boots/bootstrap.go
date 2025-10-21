@@ -126,14 +126,14 @@ func (bootStrap *bootStrap) routeHandler(w http.ResponseWriter, r *http.Request)
 }
 
 func (bootStrap *bootStrap) routerHandler(params map[string]string, w http.ResponseWriter, r *http.Request) {
-	logger.Info(fmt.Sprintf("收到新的http连接请求: %s %s %s %s", r.RemoteAddr, r.Method, r.URL, r.Proto))
+	logger.Info(fmt.Sprintf("收到新的http连接请求: %s %s %s %s", utils.ParseIP(r), r.Method, r.URL, r.Proto))
 	if params == nil {
 		logger.Error("参数为空")
 		http.Error(w, "参数为空", http.StatusBadRequest)
 		return
 	}
 	for k, v := range params {
-		logger.Info("http连接请求param:", k, "=", v)
+		logger.Debug("http连接请求param:", k, "=", v)
 	}
 	connParams := applyOption(bootStrap.Options)
 	initializer := bootStrap.Initializer
