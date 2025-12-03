@@ -155,7 +155,7 @@ func (bootStrap *bootStrap) routerHandler(params map[string]string, w http.Respo
 	}
 
 	if initializer == nil {
-		logger.Error("连接初始化异常:", r.URL.Path, ":", "channel initializer is nil")
+		logger.Warn("连接初始化异常:", r.URL.Path, ":", "channel initializer is nil")
 		r.Body.Close()
 		return
 	}
@@ -191,6 +191,7 @@ func (bootStrap *bootStrap) routerHandler(params map[string]string, w http.Respo
 		connParams[boot.KeyConnType] = boot.ConnTypeHttp
 		connParams[boot.KeyURLPath] = r.URL.Path
 		connParams[channel.KeyForRequest] = r
+		connParams[channel.KeyForResponse] = w
 		setConnParams(conn)
 		builder := channel.NewSocketChannelBuilder()
 		builder.Params(connParams)
