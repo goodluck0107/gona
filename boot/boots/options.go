@@ -47,7 +47,7 @@ var defaultValue = &Options{
 	ByteOrder:            byteOrderBigEndian,
 	ReadTimeOut:          30,    // 30秒
 	WriteTimeOut:         30,    // 30秒
-	ReadLimit:            256,   // 256个字节
+	ReadLimit:            2048,  // 2048个字节
 	PacketBytesCount:     4,     // 4个字节
 	LengthInclude:        false, // 包长度不包含自己的字节数
 	SkipPacketBytesCount: false, // 不跳过包长度
