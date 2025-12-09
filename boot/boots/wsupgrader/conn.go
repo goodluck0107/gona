@@ -2,6 +2,7 @@ package wsupgrader
 
 import (
 	"fmt"
+	"github.com/goodluck0107/gona/utils"
 	"io"
 	"net"
 	"net/http"
@@ -138,10 +139,14 @@ func (ws *wsRemoteAddr) Network() string {
 }
 
 func (ws *wsRemoteAddr) String() string {
-	XForwardFor := ws.r.Header.Get("X-Forwarded-For")
-	if len(XForwardFor) == 0 {
-		return ws.r.RemoteAddr
-	}
 	index := strings.LastIndex(ws.r.RemoteAddr, ":")
-	return fmt.Sprintf("%s%s", XForwardFor, ws.r.RemoteAddr[index:])
+	ip := utils.ParseIP(ws.r)
+	if len(ip) > 0 {
+		return fmt.Sprintf("%s%s", ip, ws.r.RemoteAddr[index:])
+	}
+	XForwardFor := ws.r.Header.Get("X-Forwarded-For")
+	if len(XForwardFor) > 0 {
+		return fmt.Sprintf("%s%s", XForwardFor, ws.r.RemoteAddr[index:])
+	}
+	return ws.r.RemoteAddr
 }

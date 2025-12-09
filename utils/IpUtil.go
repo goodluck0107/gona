@@ -12,6 +12,16 @@ import (
 //   proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 
 func ParseIP(r *http.Request) string {
+	if originalIP := r.Header.Get("X-Original-Forwarded-For"); originalIP != "" {
+		return originalIP
+	}
+
+	// 尝试从自定义头获取（如某些 CDN 会用 X-Original-IP）
+	realIP := r.Header.Get("X-Original-IP")
+	if realIP != "" {
+		return realIP
+	}
+
 	// 1. 先取 X-Real-IP，简单可靠
 	if ip := r.Header.Get("X-Real-IP"); ip != "" {
 		return ip

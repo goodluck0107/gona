@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
+	"github.com/goodluck0107/gona/utils"
 	"io"
 	"net"
 	"net/http"
@@ -232,10 +233,14 @@ func (hra *httpRemoteAddr) Network() string {
 }
 
 func (hra *httpRemoteAddr) String() string {
-	XForwardFor := hra.r.Header.Get("X-Forwarded-For")
-	if len(XForwardFor) == 0 {
-		return hra.r.RemoteAddr
-	}
 	index := strings.LastIndex(hra.r.RemoteAddr, ":")
-	return fmt.Sprintf("%s%s", XForwardFor, hra.r.RemoteAddr[index:])
+	ip := utils.ParseIP(hra.r)
+	if len(ip) > 0 {
+		return fmt.Sprintf("%s%s", ip, hra.r.RemoteAddr[index:])
+	}
+	XForwardFor := hra.r.Header.Get("X-Forwarded-For")
+	if len(XForwardFor) > 0 {
+		return fmt.Sprintf("%s%s", XForwardFor, hra.r.RemoteAddr[index:])
+	}
+	return hra.r.RemoteAddr
 }
