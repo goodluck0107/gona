@@ -1,6 +1,8 @@
 package wsupgrader
 
 import (
+	"fmt"
+	"github.com/goodluck0107/gona/internal/logger"
 	"net"
 	"net/http"
 
@@ -23,6 +25,7 @@ func NewUpgrader() *Upgrader {
 }
 
 func (u *Upgrader) Upgrade(w http.ResponseWriter, r *http.Request, params map[string]string, msgType int) (net.Conn, error) {
+	logger.Info(fmt.Sprintf("upgrade-websocket-connection:%+v", r.Header))
 	conn, err := u.Upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		return nil, err
