@@ -164,7 +164,7 @@ func (bootStrap *bootStrap) routerHandler(params map[string]string, w http.Respo
 		logger.Info("http连接请求Upgrade websocket")
 		conn, err := wsupgrader.NewUpgrader().Upgrade(w, r, params, msgType)
 		if err != nil {
-			logger.Error(fmt.Sprintf("http连接请求Upgrade异常. uri=%s, error=%s", r.RequestURI, err.Error()))
+			logger.Warn(fmt.Sprintf("http连接请求Upgrade异常. uri=%s, error=%s", r.RequestURI, err.Error()))
 			if c, ok := conn.(io.Closer); ok {
 				c.Close()
 			}
