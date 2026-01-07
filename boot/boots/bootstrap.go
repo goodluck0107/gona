@@ -126,7 +126,7 @@ func (bootStrap *bootStrap) routeHandler(w http.ResponseWriter, r *http.Request)
 }
 
 func (bootStrap *bootStrap) routerHandler(params map[string]string, w http.ResponseWriter, r *http.Request) {
-	logger.Info(fmt.Sprintf("收到新的http连接请求: %s %s %s %s", utils.ParseIP(r), r.Method, r.URL, r.Proto))
+	logger.Debug(fmt.Sprintf("收到新的http连接请求: %s %s %s %s", utils.ParseIP(r), r.Method, r.URL, r.Proto))
 	if params == nil {
 		logger.Error("参数为空")
 		http.Error(w, "参数为空", http.StatusBadRequest)
@@ -161,7 +161,7 @@ func (bootStrap *bootStrap) routerHandler(params map[string]string, w http.Respo
 	}
 
 	if upgrade, ok := params["upgrade"]; ok && upgrade == "websocket" {
-		logger.Info("http连接请求Upgrade websocket")
+		logger.Debug("http连接请求Upgrade websocket")
 		conn, err := wsupgrader.NewUpgrader().Upgrade(w, r, params, msgType)
 		if err != nil {
 			logger.Warn(fmt.Sprintf("http连接请求Upgrade异常. uri=%s, error=%s", r.RequestURI, err.Error()))
