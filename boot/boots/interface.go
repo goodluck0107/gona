@@ -79,6 +79,13 @@ func WithHttpHungup() Option {
 	}
 }
 
+// 路由分组
+func WithRouteGroup(group string) Option {
+	return func(opt *Options) {
+		opt.RouteGroup = group
+	}
+}
+
 // 连接读取消息超时时间
 func WithReadTimeOut(readTimeOut int32) Option {
 	return func(opt *Options) {

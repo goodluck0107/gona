@@ -84,7 +84,7 @@ func (bootStrap *bootStrap) configureRouter() *mux.Router {
 	router.Use(bootStrap.commonMiddleware)
 
 	router.HandleFunc("/", bootStrap.rootHandler)
-	router.HandleFunc("/ping", func(writer http.ResponseWriter, request *http.Request) {
+	router.HandleFunc(bootStrap.RouteGroup+"/ping", func(writer http.ResponseWriter, request *http.Request) {
 		writer.WriteHeader(http.StatusOK)
 		writer.Write([]byte(utils.ParseIP(request)))
 		return

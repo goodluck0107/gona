@@ -36,6 +36,7 @@ type Options struct {
 	SkipPacketBytesCount bool      // 跳过包长度
 	//// param for custom
 	CustomDefine map[string]any
+	RouteGroup   string // 路由分组
 }
 
 func defaultOptions() *Options {
@@ -54,6 +55,7 @@ var defaultValue = &Options{
 	HttpHungup:           false, // Http请求不挂起
 	RouterOptions:        make([]*RouterOption, 0),
 	CustomDefine:         make(map[string]any),
+	RouteGroup:           "/api", // 路由分组
 }
 
 type Router func(path string) bool
