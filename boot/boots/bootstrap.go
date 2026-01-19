@@ -106,8 +106,37 @@ func (bootStrap *bootStrap) commonMiddleware(next http.Handler) http.Handler {
 			w.WriteHeader(http.StatusOK)
 			return
 		}
-		next.ServeHTTP(w, r)
+
+		// 1. POST 直接过
+		if r.Method == http.MethodPost {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		// 2. HTTP/1.1 WebSocket 握手
+		if r.Method == http.MethodGet && isStdWebSocket(r) {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		// 3. HTTP/2 Extended Connect (:protocol=websocket)
+		if r.Method == http.MethodConnect && r.Header.Get(":protocol") == "websocket" {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		// 其余全部 405
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
 	})
+}
+
+// 标准 RFC 6455 握手最小校验
+func isStdWebSocket(r *http.Request) bool {
+	return strings.EqualFold(r.Header.Get("Upgrade"), "websocket") &&
+		strings.Contains(strings.ToLower(r.Header.Get("Connection")), "upgrade") &&
+		r.Header.Get("Sec-WebSocket-Version") == "13" &&
+		r.Header.Get("Sec-WebSocket-Key") != ""
 }
 
 func (bootStrap *bootStrap) rootHandler(w http.ResponseWriter, r *http.Request) {
