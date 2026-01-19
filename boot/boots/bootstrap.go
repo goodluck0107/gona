@@ -84,6 +84,11 @@ func (bootStrap *bootStrap) configureRouter() *mux.Router {
 	router.Use(bootStrap.commonMiddleware)
 
 	router.HandleFunc("/", bootStrap.rootHandler)
+	router.HandleFunc("/ping", func(writer http.ResponseWriter, request *http.Request) {
+		writer.WriteHeader(http.StatusOK)
+		writer.Write([]byte(utils.ParseIP(request)))
+		return
+	})
 	router.HandleFunc("/{upgrade:[A-Za-z0-9\\.]*}", bootStrap.upgradeHandler)
 	router.HandleFunc("/{upgrade:[A-Za-z0-9\\.\\-]*}/{route:.*}", bootStrap.routeHandler)
 
