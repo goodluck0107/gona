@@ -15,7 +15,7 @@ type Event interface {
 	Exec()
 }
 
-var eventPool *routinePool = newRoutinePool(4, 8)
+var eventPool *routinePool = newRoutinePool(10, 8)
 
 type routinePool struct {
 	poolSize int64

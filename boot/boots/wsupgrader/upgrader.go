@@ -14,13 +14,13 @@ type Upgrader struct {
 func NewUpgrader() *Upgrader {
 	return &Upgrader{
 		Upgrader: &websocket.Upgrader{
-			ReadBufferSize:  4096,
-			WriteBufferSize: 4096,
+			ReadBufferSize:  1024,
+			WriteBufferSize: 8192,
 			//WriteBufferPool: &sync.Pool{
 			//	New: func() interface{} {
-			//		return make([]byte, 4096)
+			//		return make([]byte, 32768)
 			//	},
-			//},
+			// },
 			HandshakeTimeout:  30 * time.Second,
 			CheckOrigin:       func(_ *http.Request) bool { return true },
 			EnableCompression: false,
