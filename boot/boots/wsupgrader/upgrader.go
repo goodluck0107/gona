@@ -1,12 +1,10 @@
 package wsupgrader
 
 import (
+	"github.com/gorilla/websocket"
 	"net"
 	"net/http"
 	"sync"
-	"time"
-
-	"github.com/gorilla/websocket"
 )
 
 type Upgrader struct {
@@ -23,7 +21,7 @@ func NewUpgrader() *Upgrader {
 					return make([]byte, 4096)
 				},
 			},
-			HandshakeTimeout:  10 * time.Second,
+			// HandshakeTimeout:  10 * time.Second,
 			CheckOrigin:       func(_ *http.Request) bool { return true },
 			EnableCompression: false,
 		},
