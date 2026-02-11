@@ -14,8 +14,8 @@ import (
 )
 
 const (
-	channelReadLimit int32 = 256 // 256个字节
-	readTimeOut      int32 = 30  // 30秒
+	channelReadLimit int32 = 512 // 256个字节
+	readTimeOut      int32 = 3   // 3
 )
 
 // Conn is an adapter to t.Conn, which implements all t.Conn

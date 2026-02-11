@@ -2,13 +2,13 @@ package boots
 
 import (
 	"fmt"
+	"github.com/goodluck0107/gona/boot/boots/httpupgrader"
 	"io"
 	"net"
 	"net/http"
 	"strings"
 
 	"github.com/goodluck0107/gona/boot"
-	"github.com/goodluck0107/gona/boot/boots/httpupgrader"
 	"github.com/goodluck0107/gona/boot/boots/wsupgrader"
 	"github.com/goodluck0107/gona/boot/channel"
 	"github.com/goodluck0107/gona/internal/logger"
@@ -65,7 +65,7 @@ func (bootStrap *bootStrap) listenAndServeTCP() {
 }
 
 func (bootStrap *bootStrap) listenAndServeHttp() {
-	router := bootStrap.configureRouter()
+	router := bootStrap.configureRouterGin()
 
 	addr := bootStrap.wholeInterface(bootStrap.HttpAddr)
 	if bootStrap.TLSCertificate != "" && bootStrap.TLSKey != "" {
