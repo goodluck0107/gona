@@ -4,7 +4,7 @@ import (
 	"github.com/gorilla/websocket"
 	"net"
 	"net/http"
-	"sync"
+	"time"
 )
 
 type Upgrader struct {
@@ -14,14 +14,14 @@ type Upgrader struct {
 func NewUpgrader() *Upgrader {
 	return &Upgrader{
 		Upgrader: &websocket.Upgrader{
-			ReadBufferSize:  1024,
+			ReadBufferSize:  4096,
 			WriteBufferSize: 4096,
-			WriteBufferPool: &sync.Pool{
-				New: func() interface{} {
-					return make([]byte, 4096)
-				},
-			},
-			// HandshakeTimeout:  10 * time.Second,
+			//WriteBufferPool: &sync.Pool{
+			//	New: func() interface{} {
+			//		return make([]byte, 4096)
+			//	},
+			//},
+			HandshakeTimeout:  30 * time.Second,
 			CheckOrigin:       func(_ *http.Request) bool { return true },
 			EnableCompression: false,
 		},
