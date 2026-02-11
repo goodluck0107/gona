@@ -65,7 +65,7 @@ func (bootStrap *bootStrap) listenAndServeTCP() {
 }
 
 func (bootStrap *bootStrap) listenAndServeHttp() {
-	router := bootStrap.configureRouterGin()
+	router := bootStrap.configureRouter()
 
 	addr := bootStrap.wholeInterface(bootStrap.HttpAddr)
 	if bootStrap.TLSCertificate != "" && bootStrap.TLSKey != "" {
