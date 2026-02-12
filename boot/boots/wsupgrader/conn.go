@@ -15,7 +15,7 @@ import (
 // Conn is an adapter to t.Conn, which implements all t.Conn
 // interface base on *websocket.Conn
 type Conn struct {
-	r       *http.Request
+	ip      string
 	conn    *websocket.Conn
 	params  map[string]string
 	typ     int // message type
@@ -25,7 +25,7 @@ type Conn struct {
 
 // NewWSConn return an initialized *WSConn
 func NewConn(r *http.Request, conn *websocket.Conn, params map[string]string, msgType int) *Conn {
-	return &Conn{r: r, conn: conn, params: params, msgType: msgType}
+	return &Conn{conn: conn, params: params, msgType: msgType, ip: GetClientIP(r)}
 }
 
 // Read reads data from the connection.
@@ -80,7 +80,7 @@ func (c *Conn) LocalAddr() net.Addr {
 
 // RemoteAddr returns the remote network address.
 func (c *Conn) RemoteAddr() net.Addr {
-	return newWSRemoteAddr(c.conn, c.r)
+	return newWSRemoteAddr(c.conn, c.ip)
 }
 
 // SetDeadline sets the read and write deadlines associated
@@ -124,13 +124,13 @@ func (c *Conn) SetWriteDeadline(t time.Time) error {
 
 type wsRemoteAddr struct {
 	conn *websocket.Conn
-	r    *http.Request
+	ip   string
 }
 
-func newWSRemoteAddr(conn *websocket.Conn, r *http.Request) *wsRemoteAddr {
+func newWSRemoteAddr(conn *websocket.Conn, ip string) *wsRemoteAddr {
 	return &wsRemoteAddr{
 		conn: conn,
-		r:    r,
+		ip:   ip,
 	}
 }
 
@@ -139,14 +139,18 @@ func (ws *wsRemoteAddr) Network() string {
 }
 
 func (ws *wsRemoteAddr) String() string {
-	index := strings.LastIndex(ws.r.RemoteAddr, ":")
-	ip := utils.ParseIP(ws.r)
+	return ws.ip
+}
+
+func GetClientIP(r *http.Request) string {
+	index := strings.LastIndex(r.RemoteAddr, ":")
+	ip := utils.ParseIP(r)
 	if len(ip) > 0 {
-		return fmt.Sprintf("%s%s", ip, ws.r.RemoteAddr[index:])
+		return fmt.Sprintf("%s%s", ip, r.RemoteAddr[index:])
 	}
-	XForwardFor := ws.r.Header.Get("X-Forwarded-For")
+	XForwardFor := r.Header.Get("X-Forwarded-For")
 	if len(XForwardFor) > 0 {
-		return fmt.Sprintf("%s%s", XForwardFor, ws.r.RemoteAddr[index:])
+		return fmt.Sprintf("%s%s", XForwardFor, r.RemoteAddr[index:])
 	}
-	return ws.r.RemoteAddr
+	return r.RemoteAddr
 }
