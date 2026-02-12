@@ -2,7 +2,6 @@ package boots
 
 import (
 	"fmt"
-	"github.com/goodluck0107/gona/boot/boots/httpupgrader"
 	"io"
 	"net"
 	"net/http"
@@ -213,23 +212,23 @@ func (bootStrap *bootStrap) routerHandler(params map[string]string, w http.Respo
 		return
 	}
 	if hungUp {
-		logger.Debug("http连接请求Upgrade http")
-		conn, err := httpupgrader.NewUpgrader().Upgrade(w, r, params)
-		if err != nil {
-			logger.Error(fmt.Sprintf("http连接请求Upgrade异常. uri=%s, error=%s", r.RequestURI, err.Error()))
-			if c, ok := conn.(io.Closer); ok {
-				c.Close()
-			}
-			return
-		}
-		connParams[boot.KeyConnType] = boot.ConnTypeHttp
-		connParams[boot.KeyURLPath] = r.URL.Path
-		connParams[channel.KeyForRequest] = r
-		connParams[channel.KeyForResponse] = w
-		setConnParams(conn)
-		builder := channel.NewSocketChannelBuilder()
-		builder.Params(connParams)
-		builder.Create(conn, initializer)
+		//logger.Debug("http连接请求Upgrade http")
+		//conn, err := httpupgrader.NewUpgrader().Upgrade(w, r, params)
+		//if err != nil {
+		//	logger.Error(fmt.Sprintf("http连接请求Upgrade异常. uri=%s, error=%s", r.RequestURI, err.Error()))
+		//	if c, ok := conn.(io.Closer); ok {
+		//		c.Close()
+		//	}
+		//	return
+		//}
+		//connParams[boot.KeyConnType] = boot.ConnTypeHttp
+		//connParams[boot.KeyURLPath] = r.URL.Path
+		////connParams[channel.KeyForRequest] = r
+		////connParams[channel.KeyForResponse] = w
+		//setConnParams(conn)
+		//builder := channel.NewSocketChannelBuilder()
+		//builder.Params(connParams)
+		//builder.Create(conn, initializer)
 		return
 	}
 	// handle http 请求
@@ -237,6 +236,8 @@ func (bootStrap *bootStrap) routerHandler(params map[string]string, w http.Respo
 	connParams[boot.KeyURLPath] = r.URL.Path
 	connChannel := channel.NewHttpChannel(connParams, w, r, initializer)
 	connChannel.Start()
+	connParams = nil
+	connChannel = nil
 }
 
 func applyOption(opt *Options) map[string]any {

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	"strconv"
+	"sync"
 	"time"
 
 	"github.com/goodluck0107/gona/internal/logger"
@@ -34,12 +35,13 @@ type SocketChannelReader struct {
 	mIsLD                 bool
 	mLengthInclude        bool
 	mSkipPacketBytesCount bool
+	wg                    *sync.WaitGroup
 }
 
 func NewSocketChannelReader(mConn net.Conn,
 	mContext Channel,
 	mChannelError IChannelError,
-	mChannelCallBack IChannelCallBack) (this *SocketChannelReader) {
+	mChannelCallBack IChannelCallBack, wg *sync.WaitGroup) (this *SocketChannelReader) {
 	this = new(SocketChannelReader)
 	this.mConn = mConn
 	this.mContext = mContext
@@ -51,6 +53,7 @@ func NewSocketChannelReader(mConn net.Conn,
 	this.mIsLD = this.mContext.GetBool(KeyIsLD)
 	this.mLengthInclude = this.mContext.GetBool(KeyLengthInclude)
 	this.mSkipPacketBytesCount = this.mContext.GetBool(KeySkipPacketBytesCount)
+	this.wg = wg
 	return
 }
 
@@ -63,9 +66,10 @@ func (reader *SocketChannelReader) Start() {
 func (reader *SocketChannelReader) runReadRoutine(startChan chan int) {
 	defer func() {
 		reader.mChannelError.IOReadError(errors.New("ReadRoutine done"))
+		reader.wg.Done()
 		reader.mChannelCallBack.Inactive()
-
 	}()
+	reader.wg.Add(1)
 	startChan <- 1
 	reader.mChannelCallBack.Active()
 	for {

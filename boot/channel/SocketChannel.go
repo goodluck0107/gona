@@ -20,6 +20,7 @@ type SocketChannel struct {
 	isInactive bool
 	mReader    *SocketChannelReader
 	mWriter    *SocketChannelWriter
+	wg         sync.WaitGroup
 }
 
 func NewSocketChannel(params map[string]interface{}, conn net.Conn, channelInitializer ChannelInitializer) (this *SocketChannel) {
@@ -32,8 +33,8 @@ func newSocketChannel(params map[string]interface{}, conn net.Conn, channelIniti
 	this.mConn = conn
 	this.mPipeline = NewDefaultChannelPipeline(this)
 	channelInitializer.InitChannel(this.mPipeline)
-	this.mReader = NewSocketChannelReader(this.mConn, this, this, this)
-	this.mWriter = NewSocketChannelWriter(this.mConn, this, this, this)
+	this.mReader = NewSocketChannelReader(this.mConn, this, this, this, &this.wg)
+	this.mWriter = NewSocketChannelWriter(this.mConn, this, this, this, &this.wg)
 	return
 }
 
@@ -79,6 +80,23 @@ func (chanenl *SocketChannel) Write(data []byte) {
 func (chanenl *SocketChannel) Close() {
 	if !chanenl.isInactive {
 		chanenl.mWriter.Close()
+	}
+	chanenl.wg.Wait()
+	fmt.Println("ws closed")
+	if chanenl != nil {
+		if chanenl.mPipeline != nil {
+			chanenl.mPipeline = nil
+		}
+		if chanenl.mConn != nil {
+			chanenl.mConn = nil
+		}
+		if chanenl.mReader != nil {
+			chanenl.mReader = nil
+		}
+		if chanenl.mWriter != nil {
+			chanenl.mWriter = nil
+		}
+		chanenl = nil
 	}
 }
 

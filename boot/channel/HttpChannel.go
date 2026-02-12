@@ -55,7 +55,7 @@ func (chanenl *HttpChannel) ID() string {
 
 func (chanenl *HttpChannel) Start() {
 	defer func() {
-		chanenl.r.Body.Close()
+		chanenl.Close()
 		if recoverErr := recover(); recoverErr != nil {
 			logger.Error(fmt.Sprintf("http server error:%v", fmt.Sprint(recoverErr, string(utils.Stack(3)))))
 		}
@@ -65,6 +65,7 @@ func (chanenl *HttpChannel) Start() {
 		logger.Warn(fmt.Sprintf("http read error:%v", readErr))
 		return
 	}
+	fmt.Println("read")
 	logger.Info(fmt.Sprintf("http receive reqBody:%v", string(reqBody)))
 	chanenl.mPipeline.FireMessageReceived(reqBody)
 }
@@ -77,6 +78,7 @@ func (chanenl *HttpChannel) RemoteAddr() string {
 // for Channel
 func (chanenl *HttpChannel) Write(data []byte) {
 	chanenl.w.Write(data)
+	fmt.Println("write")
 }
 
 // for Channel
@@ -84,5 +86,13 @@ func (chanenl *HttpChannel) Close() {
 	defer func() {
 		recover()
 	}()
-	chanenl.r.Body.Close()
+	if chanenl.r != nil {
+		chanenl.r.Body.Close()
+		chanenl.r = nil
+	}
+	if chanenl.w != nil {
+		chanenl.w = nil
+	}
+	chanenl = nil
+	fmt.Println("close")
 }

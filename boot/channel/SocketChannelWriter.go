@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	"strconv"
+	"sync"
 	"time"
 
 	"github.com/goodluck0107/gona/internal/logger"
@@ -22,12 +23,13 @@ type SocketChannelWriter struct {
 	mIsLD                 bool
 	mLengthInclude        bool
 	mSkipPacketBytesCount bool
+	wg                    *sync.WaitGroup
 }
 
 func NewSocketChannelWriter(mConn net.Conn,
 	mContext Channel,
 	mChannelError IChannelError,
-	mChannelCallBack IChannelCallBack) (this *SocketChannelWriter) {
+	mChannelCallBack IChannelCallBack, wg *sync.WaitGroup) (this *SocketChannelWriter) {
 	this = new(SocketChannelWriter)
 	this.mConn = mConn
 	this.mContext = mContext
@@ -39,6 +41,7 @@ func NewSocketChannelWriter(mConn net.Conn,
 	this.mLengthInclude = this.mContext.GetBool(KeyLengthInclude)
 	this.writeMsgChan = make(chan *WriteEvent, ChannelChanSize)
 	this.mSkipPacketBytesCount = this.mContext.GetBool(KeySkipPacketBytesCount)
+	this.wg = wg
 	return
 }
 
@@ -68,7 +71,9 @@ func (chanenl *SocketChannelWriter) runWriteRoutine(startChan chan int) {
 	defer func() {
 		chanenl.closeChan()
 		chanenl.mChannelError.IOWriteError(errors.New("WriteRoutine done"))
+		chanenl.wg.Done()
 	}()
+	chanenl.wg.Add(1)
 	startChan <- 1
 	for {
 		writeEvent, ok := chanenl.getWriteData()
