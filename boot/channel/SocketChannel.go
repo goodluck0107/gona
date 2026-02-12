@@ -105,6 +105,7 @@ func (chanenl *SocketChannel) closeSocket() {
 	defer func() {
 		recover()
 	}()
+	// fmt.Println("ws conn closed")
 	chanenl.mConn.Close()
 }
 

@@ -4,6 +4,10 @@ import (
 	"fmt"
 )
 
+func GetLogger() Logger {
+	return log
+}
+
 func StartUp(v ...interface{}) {
 	log.Info(v...)
 }

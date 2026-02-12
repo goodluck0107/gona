@@ -64,7 +64,7 @@ func (bootStrap *bootStrap) listenAndServeTCP() {
 }
 
 func (bootStrap *bootStrap) listenAndServeHttp() {
-	router := bootStrap.configureRouter()
+	router := bootStrap.configureRouterGin()
 
 	addr := bootStrap.wholeInterface(bootStrap.HttpAddr)
 	if bootStrap.TLSCertificate != "" && bootStrap.TLSKey != "" {
@@ -117,14 +117,7 @@ func (bootStrap *bootStrap) commonMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		// 2. HTTP/1.1 WebSocket 握手
-		if r.Method == http.MethodGet && isStdWebSocket(r) {
-			next.ServeHTTP(w, r)
-			return
-		}
-
-		// 3. HTTP/2 Extended Connect (:protocol=websocket)
-		if r.Method == http.MethodConnect && r.Header.Get(":protocol") == "websocket" {
+		if isWebSocketConn(r) {
 			next.ServeHTTP(w, r)
 			return
 		}
@@ -133,6 +126,20 @@ func (bootStrap *bootStrap) commonMiddleware(next http.Handler) http.Handler {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 		return
 	})
+}
+
+func isWebSocketConn(r *http.Request) bool {
+	// 2. HTTP/1.1 WebSocket 握手
+	if r.Method == http.MethodGet && isStdWebSocket(r) {
+		return true
+	}
+
+	// 3. HTTP/2 Extended Connect (:protocol=websocket)
+	if r.Method == http.MethodConnect && r.Header.Get(":protocol") == "websocket" {
+		return true
+	}
+
+	return false
 }
 
 // 标准 RFC 6455 握手最小校验
@@ -193,7 +200,7 @@ func (bootStrap *bootStrap) routerHandler(params map[string]string, w http.Respo
 		return
 	}
 
-	if upgrade, ok := params["upgrade"]; ok && upgrade == "websocket" {
+	if isWebSocketConn(r) {
 		logger.Debug("http连接请求Upgrade websocket")
 		conn, err := wsupgrader.NewUpgrader().Upgrade(w, r, params, msgType)
 		if err != nil {
@@ -229,7 +236,7 @@ func (bootStrap *bootStrap) routerHandler(params map[string]string, w http.Respo
 		//builder := channel.NewSocketChannelBuilder()
 		//builder.Params(connParams)
 		//builder.Create(conn, initializer)
-		return
+		// return
 	}
 	// handle http 请求
 	connParams[boot.KeyConnType] = boot.ConnTypeHttp
