@@ -2,10 +2,12 @@ package wsupgrader
 
 import (
 	"fmt"
+	"github.com/goodluck0107/gona/internal/logger"
 	"github.com/goodluck0107/gona/utils"
 	"io"
 	"net"
 	"net/http"
+	"runtime/debug"
 	"strings"
 	"time"
 
@@ -143,6 +145,14 @@ func (ws *wsRemoteAddr) String() string {
 }
 
 func GetClientIP(r *http.Request) string {
+	if r == nil {
+		return ""
+	}
+	defer func() {
+		if x := recover(); x != nil {
+			logger.Error(fmt.Sprintf("get client ip error: %v, %s", x, string(debug.Stack())))
+		}
+	}()
 	index := strings.LastIndex(r.RemoteAddr, ":")
 	var port string
 	if index >= 0 {
