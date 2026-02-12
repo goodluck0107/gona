@@ -24,8 +24,8 @@ type Conn struct {
 }
 
 // NewWSConn return an initialized *WSConn
-func NewConn(r *http.Request, conn *websocket.Conn, params map[string]string, msgType int) *Conn {
-	return &Conn{conn: conn, params: params, msgType: msgType, ip: GetClientIP(r)}
+func NewConn(ip string, conn *websocket.Conn, params map[string]string, msgType int) *Conn {
+	return &Conn{conn: conn, params: params, msgType: msgType, ip: ip}
 }
 
 // Read reads data from the connection.
@@ -144,13 +144,17 @@ func (ws *wsRemoteAddr) String() string {
 
 func GetClientIP(r *http.Request) string {
 	index := strings.LastIndex(r.RemoteAddr, ":")
+	var port string
+	if index >= 0 {
+		port = r.RemoteAddr[index:]
+	}
 	ip := utils.ParseIP(r)
 	if len(ip) > 0 {
-		return fmt.Sprintf("%s%s", ip, r.RemoteAddr[index:])
+		return fmt.Sprintf("%s%s", ip, port)
 	}
 	XForwardFor := r.Header.Get("X-Forwarded-For")
 	if len(XForwardFor) > 0 {
-		return fmt.Sprintf("%s%s", XForwardFor, r.RemoteAddr[index:])
+		return fmt.Sprintf("%s%s", XForwardFor, port)
 	}
 	return r.RemoteAddr
 }

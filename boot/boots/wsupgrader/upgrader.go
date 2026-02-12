@@ -30,9 +30,10 @@ func NewUpgrader() *Upgrader {
 
 func (u *Upgrader) Upgrade(w http.ResponseWriter, r *http.Request, params map[string]string, msgType int) (net.Conn, error) {
 	// logger.Info(fmt.Sprintf("upgrade-websocket-connection:%+v", r.Header))
+	ip := GetClientIP(r)
 	conn, err := u.Upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		return nil, err
 	}
-	return NewConn(r, conn, params, msgType), nil
+	return NewConn(ip, conn, params, msgType), nil
 }

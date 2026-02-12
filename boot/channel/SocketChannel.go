@@ -81,23 +81,23 @@ func (chanenl *SocketChannel) Close() {
 	if !chanenl.isInactive {
 		chanenl.mWriter.Close()
 	}
-	chanenl.wg.Wait()
-	fmt.Println("ws closed")
-	if chanenl != nil {
-		if chanenl.mPipeline != nil {
-			chanenl.mPipeline = nil
-		}
-		if chanenl.mConn != nil {
-			chanenl.mConn = nil
-		}
-		if chanenl.mReader != nil {
-			chanenl.mReader = nil
-		}
-		if chanenl.mWriter != nil {
-			chanenl.mWriter = nil
-		}
-		chanenl = nil
-	}
+	// chanenl.wg.Wait()
+	// fmt.Println("ws closed")
+	//if chanenl != nil {
+	//	if chanenl.mPipeline != nil {
+	//		chanenl.mPipeline = nil
+	//	}
+	//	if chanenl.mConn != nil {
+	//		chanenl.mConn = nil
+	//	}
+	//	if chanenl.mReader != nil {
+	//		chanenl.mReader = nil
+	//	}
+	//	if chanenl.mWriter != nil {
+	//		chanenl.mWriter = nil
+	//	}
+	//	chanenl = nil
+	//}
 }
 
 // 关闭底层网络
